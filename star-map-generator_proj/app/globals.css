@@ -1,0 +1,339 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  /* Updated color palette for vintage astronomical poster aesthetic */
+  --background: #ffffff;
+  /* Pure white for the poster background */
+  --foreground: #164e63;
+  /* Dark cyan for main text */
+  --card: #ecfeff;
+  /* Light cyan for any card-like sections */
+  --card-foreground: #475569;
+  /* Dark slate blue for card text */
+  --popover: #f9fafb;
+  /* Soft off-white for popover backgrounds */
+  --popover-foreground: #4b5563;
+  /* Muted dark gray for popover text */
+  --primary: #164e63;
+  /* Use for headings and primary elements */
+  --primary-foreground: #ffffff;
+  /* White text on primary backgrounds */
+  --secondary: #84cc16;
+  /* Accent color for highlights or buttons */
+  --secondary-foreground: #164e63;
+  /* Dark cyan text on secondary backgrounds */
+  --muted: #f0fdf4;
+  /* Very light green for muted areas */
+  --muted-foreground: #374151;
+  /* Dark gray for muted text */
+  --accent: #84cc16;
+  /* Use for emphasis and highlights */
+  --accent-foreground: #ffffff;
+  /* White text on accent backgrounds */
+  --destructive: #ff4d4f;
+  /* Red for any destructive actions */
+  --destructive-foreground: #ffffff;
+  /* White text on destructive backgrounds */
+  --border: #475569;
+  /* Dark slate blue for borders */
+  --input: #f9fafb;
+  /* Light background for input fields */
+  --ring: #84cc16;
+  /* Use for focus rings */
+  --chart-1: #164e63;
+  /* For celestial representations */
+  --chart-2: #84cc16;
+  /* For accentuating stars */
+  --chart-3: #ecfeff;
+  /* For subtle backgrounds */
+  --chart-4: #f0fdf4;
+  /* For muted elements */
+  --chart-5: #ffffff;
+  /* For main backgrounds */
+  --radius: 0.5rem;
+  --sidebar: #ecfeff;
+  --sidebar-foreground: #164e63;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #164e63;
+  --sidebar-accent: #84cc16;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #475569;
+  --sidebar-ring: #84cc16;
+}
+
+.dark {
+  /* Dark mode maintains vintage poster aesthetic with darker tones */
+  --background: #0f172a;
+  --foreground: #ecfeff;
+  --card: #1e293b;
+  --card-foreground: #ecfeff;
+  --popover: #1e293b;
+  --popover-foreground: #ecfeff;
+  --primary: #22d3ee;
+  --primary-foreground: #0f172a;
+  --secondary: #a3e635;
+  --secondary-foreground: #0f172a;
+  --muted: #1e293b;
+  --muted-foreground: #94a3b8;
+  --accent: #a3e635;
+  --accent-foreground: #0f172a;
+  --destructive: #ef4444;
+  --destructive-foreground: #ffffff;
+  --border: #334155;
+  --input: #1e293b;
+  --ring: #a3e635;
+  --chart-1: #22d3ee;
+  --chart-2: #a3e635;
+  --chart-3: #1e293b;
+  --chart-4: #0f172a;
+  --chart-5: #334155;
+  --sidebar: #1e293b;
+  --sidebar-foreground: #ecfeff;
+  --sidebar-primary: #22d3ee;
+  --sidebar-primary-foreground: #0f172a;
+  --sidebar-accent: #a3e635;
+  --sidebar-accent-foreground: #0f172a;
+  --sidebar-border: #334155;
+  --sidebar-ring: #a3e635;
+}
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  /* Adding Dancing Script font variable for cursive poster text */
+  --font-dancing-script: var(--font-dancing-script);
+  /* Added Playfair Display font variable for elegant serif text */
+  --font-playfair-display: var(--font-playfair-display);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Added vintage poster-specific styles for circular star map */
+@keyframes twinkle {
+
+  0%,
+  100% {
+    opacity: 0.4;
+  }
+
+  50% {
+    opacity: 1;
+  }
+}
+
+@keyframes rotate {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.star-twinkle {
+  animation: twinkle 3s ease-in-out infinite;
+}
+
+.constellation-line {
+  stroke: var(--color-primary);
+  stroke-width: 1.5;
+  opacity: 0.7;
+}
+
+.star-field {
+  background: radial-gradient(circle at center, rgba(132, 204, 22, 0.05) 0%, transparent 70%);
+}
+
+/* Vintage poster decorative elements */
+.poster-border {
+  border: 3px solid var(--color-border);
+  border-radius: 50%;
+  position: relative;
+}
+
+.poster-border::before {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+
+.poster-border::after {
+  content: "";
+  position: absolute;
+  inset: 8px;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+/* Ornamental corner decorations */
+.corner-ornament {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  background: var(--color-background);
+}
+
+.corner-ornament::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 8px;
+  height: 8px;
+  background: var(--color-accent);
+  border-radius: 50%;
+}
+
+/* Typography for poster titles */
+.poster-title {
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.poster-subtitle {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.02em;
+}
+
+/* Extra spacing for PDF export to avoid overlaps */
+[data-export="pdf"] [data-subtitle] {
+  margin-top: 12px !important;
+}
+
+[data-export="pdf"] [data-date] {
+  margin-top: 16px !important;
+}
+
+[data-export="pdf"] [data-title] {
+  margin-bottom: 18px !important;
+}
+
+/* Hide non-print elements during export */
+[data-export="pdf"] [data-noexport] {
+  display: none !important;
+}
+
+[data-exporting="true"] [data-noexport] {
+  display: none !important;
+}
+
+/* Spectacular site theming helpers */
+.brand-gradient {
+  background: linear-gradient(90deg, #60a5fa 0%, #a78bfa 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.btn-gradient {
+  background: linear-gradient(135deg, var(--color-foreground) 0%, #6366f1 50%, #a855f7 100%);
+  color: var(--color-card);
+}
+
+.card-glass {
+  background: color-mix(in srgb, var(--color-card) 80%, transparent);
+  backdrop-filter: saturate(140%) blur(8px);
+}
+
+.section-gradient {
+  background: radial-gradient(1200px 400px at 10% -10%, rgba(99, 102, 241, 0.12), transparent 60%),
+    radial-gradient(1200px 400px at 90% -10%, rgba(168, 85, 247, 0.12), transparent 60%);
+}
+
+/* Coordinate grid styling */
+.coordinate-grid {
+  stroke: var(--color-border);
+  stroke-width: 0.5;
+  opacity: 0.3;
+  stroke-dasharray: 2, 2;
+}
+
+/* Star magnitude styling */
+.star-magnitude-1 {
+  r: 3;
+  fill: var(--color-primary);
+  opacity: 1;
+}
+
+.star-magnitude-2 {
+  r: 2.5;
+  fill: var(--color-primary);
+  opacity: 0.9;
+}
+
+.star-magnitude-3 {
+  r: 2;
+  fill: var(--color-primary);
+  opacity: 0.8;
+}
+
+.star-magnitude-4 {
+  r: 1.5;
+  fill: var(--color-primary);
+  opacity: 0.7;
+}
+
+.star-magnitude-5 {
+  r: 1;
+  fill: var(--color-primary);
+  opacity: 0.6;
+}

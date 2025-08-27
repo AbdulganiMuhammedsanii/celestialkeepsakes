@@ -1,0 +1,81 @@
+import type React from "react"
+import type { Metadata } from "next"
+import { GeistSans } from "geist/font/sans"
+import { GeistMono } from "geist/font/mono"
+import { Dancing_Script, Playfair_Display, Cormorant_Garamond, Great_Vibes, Parisienne } from "next/font/google"
+import "./globals.css"
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-dancing-script",
+})
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-playfair-display",
+})
+
+const cormorant = Cormorant_Garamond({
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-cormorant",
+})
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+  variable: "--font-great-vibes",
+})
+
+const parisienne = Parisienne({
+  subsets: ["latin"],
+  display: "swap",
+  weight: "400",
+  variable: "--font-parisienne",
+})
+
+export const metadata: Metadata = {
+  title: "Star Map Generator",
+  description: "Create beautiful astronomical posters",
+  generator: "v0.app",
+}
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode
+}>) {
+  return (
+    <html lang="en" className="dark" suppressHydrationWarning>
+      <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${dancingScript.variable} ${playfairDisplay.variable} ${cormorant.variable} ${greatVibes.variable} ${parisienne.variable}`}>
+        <header className="sticky top-0 z-40 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" className="text-lg font-semibold brand-gradient">Celestial Keepsakes</a>
+            <nav className="flex gap-6 text-sm">
+              <a href="/" className="hover:opacity-80">Home</a>
+              <a href="/shop" className="hover:opacity-80">Shop Now</a>
+              <a href="/faq" className="hover:opacity-80">FAQ</a>
+              <a href="/contact" className="hover:opacity-80">Contact</a>
+            </nav>
+          </div>
+        </header>
+        <main className="section-gradient min-h-screen">{children}</main>
+        <footer className="border-t mt-16">
+          <div className="container mx-auto px-4 py-10 text-sm text-muted-foreground">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p>© {new Date().getFullYear()} Celestial Keepsakes. All rights reserved.</p>
+              <div className="flex gap-6">
+                <a href="/faq">FAQ</a>
+                <a href="/contact">Contact</a>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </body>
+    </html>
+  )
+}
