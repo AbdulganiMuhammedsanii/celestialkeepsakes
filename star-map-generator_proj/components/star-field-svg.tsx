@@ -107,7 +107,7 @@ export function StarFieldSVG({ config, isGenerating }: StarFieldProps) {
   // Approximate Local Sidereal Time rotation (radians) for given date/time/longitude
   const raRotation = useMemo(() => {
     try {
-      const date = new Date(`${config.date}T${config.time}:00Z`)
+      const date = new Date(`${config.date}T${config.time}:00`)
       const toJulian = (d: Date) => {
         const time = d.getTime() / 86400000 + 2440587.5
         return time

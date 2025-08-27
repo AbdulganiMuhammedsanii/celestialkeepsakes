@@ -790,14 +790,18 @@ export function StarMapGenerator() {
                   </p>
 
                   {/* Date and Location */}
-                  <p data-date className="text-xs tracking-[0.25em]" style={{ color: colors.subtext, marginTop: 10 }}>
-                    {new Date(config.date)
-                      .toLocaleDateString("en-US", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric",
-                      })
-                      .toUpperCase()}
+                  <p data-date className="text-[10px] tracking-[0.15em]" style={{ color: colors.subtext, marginTop: 6 }}>
+                    {(() => {
+                      // Render date without timezone shifting by constructing local midnight
+                      try {
+                        const d = new Date(`${config.date}T00:00:00`)
+                        return d
+                          .toLocaleDateString("en-US", { day: "numeric", month: "long", year: "numeric" })
+                          .toUpperCase()
+                      } catch {
+                        return config.date
+                      }
+                    })()}
                     , {config.city.toUpperCase()}
                   </p>
                 </div>
