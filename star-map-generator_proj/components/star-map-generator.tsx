@@ -181,16 +181,47 @@ export function StarMapGenerator() {
     setCurrentMapId(map.id)
   }
 
-  const handleCityChange = (cityName: string) => {
-    const city = majorCities.find((c) => c.name === cityName)
-    if (city) {
-      setConfig((prev) => ({
-        ...prev,
-        city: cityName,
-        latitude: city.lat,
-        longitude: city.lng,
-      }))
+  // City search state
+  const [cityQuery, setCityQuery] = useState("")
+  const [cityResults, setCityResults] = useState<any[]>([])
+  const [isSearchingCities, setIsSearchingCities] = useState(false)
+  const citySearchAbortRef = useRef<AbortController | null>(null)
+
+  // Debounced city search
+  useEffect(() => {
+    const q = cityQuery.trim()
+    if (!q || q.length < 2) {
+      setCityResults([])
+      return
     }
+    const handle = setTimeout(async () => {
+      try {
+        setIsSearchingCities(true)
+        if (citySearchAbortRef.current) citySearchAbortRef.current.abort()
+        const ctrl = new AbortController()
+        citySearchAbortRef.current = ctrl
+        const res = await fetch(`/api/cities?q=${encodeURIComponent(q)}&limit=20`, { signal: ctrl.signal })
+        if (!res.ok) return
+        const data = await res.json()
+        setCityResults(Array.isArray(data.results) ? data.results : [])
+      } catch (e) {
+        // ignore abort errors
+      } finally {
+        setIsSearchingCities(false)
+      }
+    }, 300)
+    return () => clearTimeout(handle)
+  }, [cityQuery])
+
+  const handleCitySelect = (result: any) => {
+    setConfig((prev) => ({
+      ...prev,
+      city: result.concise_name || result.name || result.display_name,
+      latitude: Number(result.lat),
+      longitude: Number(result.lon),
+    }))
+    setCityQuery("")
+    setCityResults([])
   }
 
   const generateStarMap = async () => {
@@ -518,20 +549,41 @@ export function StarMapGenerator() {
                   <Label className="text-sm font-medium" style={{ color: colors.text }}>
                     City
                   </Label>
-                  <Select value={config.city} onValueChange={handleCityChange}>
-                    <SelectTrigger
+                  <div className="relative">
+                    <Input
+                      placeholder="Search city..."
+                      value={cityQuery}
+                      onChange={(e) => setCityQuery(e.target.value)}
                       style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
-                    >
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {majorCities.map((city) => (
-                        <SelectItem key={city.name} value={city.name}>
-                          {city.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                    />
+                    {cityQuery && (
+                      <div
+                        className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded-md border bg-popover text-popover-foreground shadow-md"
+                        style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                      >
+                        {isSearchingCities ? (
+                          <div className="p-2 text-xs opacity-70">Searching...</div>
+                        ) : cityResults.length === 0 ? (
+                          <div className="p-2 text-xs opacity-70">No results</div>
+                        ) : (
+                          cityResults.map((r) => (
+                            <button
+                              key={r.id}
+                              type="button"
+                              onClick={() => handleCitySelect(r)}
+                              className="w-full text-left px-3 py-2 text-xs hover:opacity-80"
+                              style={{ color: colors.text }}
+                            >
+                              {r.concise_name}
+                            </button>
+                          ))
+                        )}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-xs opacity-70" style={{ color: colors.subtext }}>
+                    Selected: {config.city} ({config.latitude.toFixed(4)}, {config.longitude.toFixed(4)})
+                  </div>
                 </div>
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-2">
