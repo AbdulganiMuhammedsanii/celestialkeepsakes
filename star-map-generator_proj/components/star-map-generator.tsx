@@ -88,11 +88,21 @@ export function StarMapGenerator() {
     // If we came back paid and hash matches current, auto-download once
     const handleAuto = async () => {
       if (!posterRef.current) return
-      // wait for render
-      await new Promise((r) => setTimeout(r, 300))
-      const currentHash = configHash
-      if ((paidQuery || successPath) && hash && hash === currentHash) {
+      if ((paidQuery || successPath) && hash) {
+        try {
+          // Try to restore the exact config used at checkout from localStorage
+          const stored = window.localStorage?.getItem(`ck_checkout_${hash}`)
+          if (stored) {
+            const parsed = JSON.parse(stored)
+            setConfig((prev) => ({ ...prev, ...parsed }))
+          }
+        } catch { }
+        // allow state to apply and poster to render
+        await new Promise((r) => setTimeout(r, 500))
         await downloadPoster()
+        try {
+          window.localStorage?.removeItem(`ck_checkout_${hash}`)
+        } catch { }
         // Clean query to avoid re-downloading on refresh
         const clean = new URL(window.location.href)
         clean.searchParams.delete("paid")
@@ -273,6 +283,28 @@ export function StarMapGenerator() {
   })()
 
   const beginCheckout = async () => {
+    try {
+      // persist current config so we can restore for auto-download after returning
+      window.localStorage?.setItem(`ck_checkout_${configHash}`,
+        JSON.stringify({
+          date: config.date,
+          time: config.time,
+          city: config.city,
+          latitude: config.latitude,
+          longitude: config.longitude,
+          theme: config.theme,
+          showConstellations: config.showConstellations,
+          showGrid: config.showGrid,
+          showGraticule: config.showGraticule,
+          showLabels: config.showLabels,
+          customTitle: config.customTitle,
+          customSubtitle: config.customSubtitle,
+          titleFont: config.titleFont,
+          darkMode: config.darkMode,
+        })
+      )
+    } catch { }
+
     const res = await fetch("/api/create-checkout-session", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -763,7 +795,7 @@ export function StarMapGenerator() {
                 <div className="text-center mt-5 mb-7" data-export-scope>
                   <h2
                     data-title
-                    className="text-4xl mb-5"
+                    className="text-5xl mb-4"
                     style={{
                       fontFamily:
                         config.titleFont === "cormorant"
@@ -785,7 +817,7 @@ export function StarMapGenerator() {
 
                   {/* Names */}
                   <p data-subtitle className="text-lg font-semibold tracking-[0.2em]"
-                    style={{ color: colors.text, marginTop: 34, marginBottom: 8 }}>
+                    style={{ color: colors.text, marginTop: 20, marginBottom: 6 }}>
                     {config.customSubtitle}
                   </p>
 
