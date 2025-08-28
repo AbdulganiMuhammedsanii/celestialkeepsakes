@@ -82,6 +82,18 @@ export default function RootLayout({
         </footer>
         <Analytics />
         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3JH5HDQ0DG"
+          strategy="afterInteractive"
+        />
+        <Script id="ga4" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3JH5HDQ0DG');
+          `}
+        </Script>
+        <Script
           id="adsense"
           async
           strategy="afterInteractive"
