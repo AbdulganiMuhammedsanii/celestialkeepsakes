@@ -869,8 +869,8 @@ export function StarMapGenerator() {
                     style={{
                       width: "480px",
                       height: "480px",
-                      maxWidth: "min(480px, 60vw)",
-                      maxHeight: "min(480px, 60vw)",
+                      maxWidth: "min(480px, 85vw)",
+                      maxHeight: "min(480px, 85vw)",
                       marginTop: "12px",
                     }}
                   >
@@ -881,7 +881,7 @@ export function StarMapGenerator() {
                 <div className="text-center mt-5 mb-7" data-export-scope>
                   <h2
                     data-title
-                    className="text-5xl mb-4"
+                    className="mb-4 text-3xl sm:text-4xl md:text-5xl mt-10 sm:mt-16 md:mt-24"
                     style={{
                       fontFamily:
                         config.titleFont === "cormorant"
@@ -895,15 +895,14 @@ export function StarMapGenerator() {
                       fontWeight: 500,
                       letterSpacing: "0.01em",
                       lineHeight: 1.1,
-                      marginTop: 90,
                     }}
                   >
                     {config.customTitle}
                   </h2>
 
                   {/* Names */}
-                  <p data-subtitle className="text-lg font-semibold tracking-[0.2em]"
-                    style={{ color: colors.text, marginTop: 20, marginBottom: 6 }}>
+                  <p data-subtitle className="text-base sm:text-lg font-semibold tracking-[0.15em] sm:tracking-[0.2em]"
+                    style={{ color: colors.text, marginTop: 16, marginBottom: 6 }}>
                     {config.customSubtitle}
                   </p>
 

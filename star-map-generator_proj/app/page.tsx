@@ -8,8 +8,8 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <section className="container mx-auto px-4 py-20">
-        <div className="grid md:grid-cols-2 gap-10 items-center">
+      <section className="container mx-auto px-4 py-16 md:py-20">
+        <div className="grid grid-cols-2 gap-6 md:gap-10 items-center">
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl font-bold mb-3 brand-gradient">Cherish the Moment</h1>
             <p className="text-base text-muted-foreground mb-6">
@@ -17,14 +17,14 @@ export default function Home() {
             </p>
             <a href="#create" className="inline-block rounded-md px-6 py-3 btn-gradient text-sm shadow-lg">Create Yours</a>
           </div>
-          <div className="justify-self-end">
-            <div className="relative w-full max-w-sm md:max-w-md">
-              <div className="absolute -inset-6 rounded-3xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 blur-2xl" />
+          <div className="justify-self-end w-full">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
+              <div className="absolute -inset-4 sm:-inset-6 rounded-3xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 blur-2xl" />
               <Image
                 src={samplePic}
                 alt="Framed star map poster on table"
-                className="relative rounded-2xl border border-white/10 shadow-2xl"
-                sizes="(min-width: 768px) 480px, 90vw"
+                className="relative rounded-2xl border border-white/10 shadow-2xl h-auto w-full"
+                sizes="(min-width: 1024px) 420px, (min-width: 768px) 360px, 50vw"
                 priority
               />
             </div>
