@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import { Dancing_Script, Playfair_Display, Cormorant_Garamond, Great_Vibes, Parisienne } from "next/font/google"
 import "./globals.css"
+import { Analytics } from "@vercel/analytics/react"
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -75,6 +76,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <Analytics />
       </body>
     </html>
   )
