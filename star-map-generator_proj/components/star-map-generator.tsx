@@ -74,6 +74,8 @@ export function StarMapGenerator() {
   const posterRef = useRef<HTMLDivElement>(null)
   const [hasPaid, setHasPaid] = useState(false)
   const [paidHash, setPaidHash] = useState<string | null>(null)
+  const [coupon, setCoupon] = useState("")
+  const [couponStatus, setCouponStatus] = useState<"idle" | "checking" | "valid" | "invalid">("idle")
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -283,6 +285,39 @@ export function StarMapGenerator() {
   })()
 
   const beginCheckout = async () => {
+    if (couponStatus === "valid") {
+      // Skip payment if coupon is valid; set paid and auto-download
+      try {
+        // Persist current config (same flow used after stripe success)
+        window.localStorage?.setItem(
+          `ck_checkout_${configHash}`,
+          JSON.stringify({
+            date: config.date,
+            time: config.time,
+            city: config.city,
+            latitude: config.latitude,
+            longitude: config.longitude,
+            theme: config.theme,
+            showConstellations: config.showConstellations,
+            showGrid: config.showGrid,
+            showGraticule: config.showGraticule,
+            showLabels: config.showLabels,
+            customTitle: config.customTitle,
+            customSubtitle: config.customSubtitle,
+            titleFont: config.titleFont,
+            darkMode: config.darkMode,
+          }),
+        )
+      } catch { }
+      setHasPaid(true)
+      setPaidHash(configHash)
+      // allow UI update and render then download
+      await new Promise((r) => setTimeout(r, 300))
+      await downloadPoster()
+      try { window.localStorage?.removeItem(`ck_checkout_${configHash}`) } catch { }
+      return
+    }
+
     try {
       // persist current config so we can restore for auto-download after returning
       window.localStorage?.setItem(`ck_checkout_${configHash}`,
@@ -470,6 +505,56 @@ export function StarMapGenerator() {
               </Card>
             )}
 
+            {/* Coupon - moved up for visibility */}
+            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
+                  Coupon
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Enter coupon code"
+                    value={coupon}
+                    onChange={(e) => {
+                      setCoupon(e.target.value)
+                      setCouponStatus("idle")
+                    }}
+                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                  />
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      if (!coupon.trim()) return
+                      setCouponStatus("checking")
+                      try {
+                        const res = await fetch("/api/validate-coupon", {
+                          method: "POST",
+                          headers: { "Content-Type": "application/json" },
+                          body: JSON.stringify({ code: coupon.trim() }),
+                        })
+                        const data = await res.json()
+                        setCouponStatus(data?.valid ? "valid" : "invalid")
+                      } catch {
+                        setCouponStatus("invalid")
+                      }
+                    }}
+                    disabled={couponStatus === "checking"}
+                    style={{ borderColor: colors.cardBorder, color: colors.text }}
+                  >
+                    {couponStatus === "checking" ? "Checking..." : "Apply"}
+                  </Button>
+                </div>
+                {couponStatus === "valid" && (
+                  <div className="text-xs" style={{ color: colors.subtext }}>Coupon applied. You can download without payment.</div>
+                )}
+                {couponStatus === "invalid" && (
+                  <div className="text-xs" style={{ color: colors.subtext }}>Invalid coupon code.</div>
+                )}
+              </CardContent>
+            </Card>
+
             <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
@@ -649,6 +734,7 @@ export function StarMapGenerator() {
                 </div>
               </CardContent>
             </Card>
+
 
             {/* Theme & Options */}
             <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
@@ -873,7 +959,7 @@ export function StarMapGenerator() {
                   <>
                     <Button onClick={beginCheckout} className="px-5 py-2 shadow-lg">
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Checkout ($7)
+                      {couponStatus === "valid" ? "Download (Coupon)" : "Checkout ($7)"}
                     </Button>
                     <Button asChild variant="outline">
                       <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
