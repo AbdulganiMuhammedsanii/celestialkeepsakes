@@ -5,6 +5,7 @@ import { GeistMono } from "geist/font/mono"
 import { Dancing_Script, Playfair_Display, Cormorant_Garamond, Great_Vibes, Parisienne } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
+import Script from "next/script"
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -77,6 +78,13 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
+        <Script
+          id="adsense"
+          async
+          strategy="afterInteractive"
+          crossOrigin="anonymous"
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896735734946710"
+        />
       </body>
     </html>
   )
