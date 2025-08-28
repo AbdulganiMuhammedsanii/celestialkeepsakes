@@ -5,7 +5,6 @@ import { GeistMono } from "geist/font/mono"
 import { Dancing_Script, Playfair_Display, Cormorant_Garamond, Great_Vibes, Parisienne } from "next/font/google"
 import "./globals.css"
 import { Analytics } from "@vercel/analytics/react"
-import Script from "next/script"
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -53,6 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" suppressHydrationWarning>
+      <head>
+        <meta name="google-adsense-account" content="ca-pub-4896735734946710" />
+      </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${dancingScript.variable} ${playfairDisplay.variable} ${cormorant.variable} ${greatVibes.variable} ${parisienne.variable}`}>
         <header className="sticky top-0 z-40 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
@@ -78,13 +80,6 @@ export default function RootLayout({
           </div>
         </footer>
         <Analytics />
-        <Script
-          id="adsense"
-          async
-          strategy="afterInteractive"
-          crossOrigin="anonymous"
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4896735734946710"
-        />
       </body>
     </html>
   )
