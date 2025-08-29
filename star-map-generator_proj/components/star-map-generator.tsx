@@ -841,7 +841,7 @@ export function StarMapGenerator() {
               {/* Poster Container */}
               <div
                 ref={posterRef}
-                className="relative p-10 shadow-2xl"
+                className="relative shadow-2xl mx-auto w-full max-w-[88vw] overflow-hidden p-4 sm:p-6 md:p-10"
                 style={{
                   backgroundColor: colors.posterBg,
                   border: `2px solid ${colors.border}`,
@@ -849,8 +849,8 @@ export function StarMapGenerator() {
                 }}
               >
                 {/* Enhanced frame: double inner borders */}
-                <div className="absolute inset-6 border" style={{ borderColor: colors.border }} />
-                <div className="absolute inset-10 border opacity-60" style={{ borderColor: colors.border }} />
+                <div className="absolute inset-6 sm:inset-7 md:inset-8 border" style={{ borderColor: colors.border }} />
+                <div className="absolute inset-8 sm:inset-9 md:inset-10 border opacity-60" style={{ borderColor: colors.border }} />
                 {/* Subtle vignette overlay for depth */}
                 <div
                   className="absolute inset-0 pointer-events-none"
@@ -863,22 +863,21 @@ export function StarMapGenerator() {
                 />
 
                 {/* Star Map Circle */}
-                <div className="flex justify-center items-center" style={{ height: "58%" }}>
+                <div className="flex justify-center items-center" style={{ height: "56%" }}>
                   <div
                     className="relative flex-shrink-0"
                     style={{
-                      width: "480px",
-                      height: "480px",
-                      maxWidth: "min(480px, 85vw)",
-                      maxHeight: "min(480px, 85vw)",
-                      marginTop: "12px",
+                      width: "min(480px, calc(100% - 6rem))",
+                      maxWidth: "min(480px, calc(100% - 6rem))",
+                      aspectRatio: "1 / 1",
+                      marginTop: "26px",
                     }}
                   >
                     <StarFieldSVG config={config} isGenerating={isGenerating} />
                   </div>
                 </div>
 
-                <div className="text-center mt-5 mb-7" data-export-scope>
+                <div className="text-center mt-4 sm:mt-5 mb-5 sm:mb-7 px-3" data-export-scope>
                   <h2
                     data-title
                     className="mb-4 text-3xl sm:text-4xl md:text-5xl mt-10 sm:mt-16 md:mt-24"
@@ -901,13 +900,13 @@ export function StarMapGenerator() {
                   </h2>
 
                   {/* Names */}
-                  <p data-subtitle className="text-base sm:text-lg font-semibold tracking-[0.15em] sm:tracking-[0.2em]"
-                    style={{ color: colors.text, marginTop: 16, marginBottom: 6 }}>
+                  <p data-subtitle className="text-base sm:text-lg font-semibold tracking-[0.12em] sm:tracking-[0.2em] break-words"
+                    style={{ color: colors.text, marginTop: 12, marginBottom: 6 }}>
                     {config.customSubtitle}
                   </p>
 
                   {/* Date and Location */}
-                  <p data-date className="text-[10px] tracking-[0.15em]" style={{ color: colors.subtext, marginTop: 6 }}>
+                  <p data-date className="text-[10px] tracking-[0.12em] leading-tight" style={{ color: colors.subtext, marginTop: 4 }}>
                     {(() => {
                       // Render date without timezone shifting by constructing local midnight
                       try {
@@ -925,11 +924,20 @@ export function StarMapGenerator() {
 
                 {/* Bottom Text (hidden on export) */}
                 <div className="absolute bottom-10 left-0 right-0 text-center" data-noexport>
-                  <p className="text-sm font-semibold tracking-[0.35em]" style={{ color: colors.subtext, marginBottom: 30 }}>
+                  <p className="font-semibold tracking-[0.3em] text-[9px] sm:text-xs md:text-sm" style={{ color: colors.subtext, marginBottom: 8 }}>
                     MAKE YOUR OWN SKY.
                     <br />
                     MAKE IT YOURS.
                   </p>
+                  {!(hasPaid && paidHash === configHash) && (
+                    <div
+                      aria-label="Watermark"
+                      className="mx-auto inline-block px-2 py-1 text-[9px] sm:text-[10px] uppercase tracking-widest border rounded"
+                      style={{ color: colors.subtext, borderColor: colors.cardBorder }}
+                    >
+                      WATERMARK — Removed after purchase
+                    </div>
+                  )}
                 </div>
               </div>
 
