@@ -51,7 +51,7 @@ export default function Home() {
               </div>
             </div>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              “Absolutely stunning. The map captured the night of our engagement perfectly and the print quality is top notch. It’s now the centerpiece of our living room.”
+              “Absolutely stunning. The map captured the night of our engagement perfectly and the design feels elegant and thoughtful. It’s now the centerpiece of our living room.”
             </p>
           </div>
           <div className="rounded-xl border p-6 card-glass">
@@ -113,10 +113,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* CTA */}
+      {/* Generator */}
       <section id="create" className="container mx-auto px-4 py-20">
         <div className="rounded-2xl border p-6 card-glass">
-          <h2 className="text-3xl font-semibold mb-4">Create Your Celestial Keepsake</h2>
           <StarMapGenerator />
         </div>
       </section>

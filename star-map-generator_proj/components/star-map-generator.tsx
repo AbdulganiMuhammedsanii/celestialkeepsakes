@@ -445,9 +445,9 @@ export function StarMapGenerator() {
       </header>
 
       <div className="container mx-auto px-4 py-8">
-        <div className="grid lg:grid-cols-4 gap-8">
-          {/* Controls Panel */}
-          <div className="lg:col-span-1 space-y-6">
+        <div className="grid lg:grid-cols-5 gap-6">
+          {/* Controls Panel (mobile after poster) */}
+          <div className="lg:col-span-2 order-2 lg:order-1 flex flex-col gap-3 pr-2">
             {enablePersistence && (
               <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
                 <CardHeader className="pb-4">
@@ -505,8 +505,8 @@ export function StarMapGenerator() {
               </Card>
             )}
 
-            {/* Coupon - moved up for visibility */}
-            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            {/* Coupon */}
+            <Card className="order-[998]" style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
               <CardHeader className="pb-4">
                 <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
                   Coupon
@@ -521,10 +521,12 @@ export function StarMapGenerator() {
                       setCoupon(e.target.value)
                       setCouponStatus("idle")
                     }}
+                    className="h-8 text-xs px-2"
                     style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
                   />
                   <Button
                     variant="outline"
+                    size="sm"
                     onClick={async () => {
                       if (!coupon.trim()) return
                       setCouponStatus("checking")
@@ -547,13 +549,52 @@ export function StarMapGenerator() {
                   </Button>
                 </div>
                 {couponStatus === "valid" && (
-                  <div className="text-xs" style={{ color: colors.subtext }}>Coupon applied. You can download without payment.</div>
+                  <div className="text-[10px]" style={{ color: colors.subtext }}>Coupon applied. You can download without payment.</div>
                 )}
                 {couponStatus === "invalid" && (
-                  <div className="text-xs" style={{ color: colors.subtext }}>Invalid coupon code.</div>
+                  <div className="text-[10px]" style={{ color: colors.subtext }}>Invalid coupon code.</div>
                 )}
               </CardContent>
             </Card>
+
+            {/* Checkout / Download Buttons (bottom of controls after all fields and coupon) */}
+            <div className="order-[999] flex justify-center lg:justify-start gap-3">
+              {hasPaid && paidHash === configHash ? (
+                <Button
+                  onClick={downloadPoster}
+                  disabled={isDownloading}
+                  variant="outline"
+                  style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder, color: colors.text }}
+                >
+                  {isDownloading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="w-4 h-4 mr-2" />
+                      Download Poster
+                    </>
+                  )}
+                </Button>
+              ) : (
+                <>
+                  <Button onClick={beginCheckout} className="px-5 py-2 shadow-lg">
+                    <ShoppingCart className="w-4 h-4 mr-2" />
+                    {couponStatus === "valid" ? "Download (Coupon)" : "Checkout ($7)"}
+                  </Button>
+                  <Button asChild variant="outline">
+                    <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
+                      <ShoppingCart className="w-4 h-4 mr-2" />
+                      Go to Checkout
+                    </a>
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* (No checkout buttons here; kept at bottom under poster) */}
 
             <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
               <CardHeader className="pb-4">
@@ -561,8 +602,8 @@ export function StarMapGenerator() {
                   Custom Text
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
                   <Label htmlFor="customTitle" className="text-sm font-medium" style={{ color: colors.text }}>
                     Title (Script Text)
                   </Label>
@@ -572,19 +613,17 @@ export function StarMapGenerator() {
                     onChange={(e) => setConfig((prev) => ({ ...prev, customTitle: e.target.value }))}
                     style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
                     placeholder="The night we met"
+                    className="h-8 text-xs"
                   />
                 </div>
-                <div className="space-y-2">
-                  <Label htmlFor="customSubtitle" className="text-sm font-medium" style={{ color: colors.text }}>
-                    Names
-                  </Label>
-                  <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-2">
                       <Label className="text-sm font-medium" style={{ color: colors.text }}>
                         Title Font
                       </Label>
                       <Select value={config.titleFont} onValueChange={(value: any) => setConfig((p) => ({ ...p, titleFont: value }))}>
-                        <SelectTrigger style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}>
+                        <SelectTrigger className="h-8 text-xs" style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -602,9 +641,10 @@ export function StarMapGenerator() {
                     onChange={(e) => setConfig((prev) => ({ ...prev, customSubtitle: e.target.value }))}
                     style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
                     placeholder="PHILIPPE & MARIE"
+                    className="h-8 text-xs"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
                     <Label className="text-sm font-medium" style={{ color: colors.text }}>Quick Presets</Label>
                     <div className="flex flex-wrap gap-2">
@@ -625,7 +665,7 @@ export function StarMapGenerator() {
                   Date & Time
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-2">
                 <div className="space-y-2">
                   <Label htmlFor="date" className="text-sm font-medium" style={{ color: colors.text }}>
                     Date
@@ -636,6 +676,7 @@ export function StarMapGenerator() {
                     value={config.date}
                     onChange={(e) => setConfig((prev) => ({ ...prev, date: e.target.value }))}
                     style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    className="h-8 text-xs"
                   />
                 </div>
                 <div className="space-y-2">
@@ -648,6 +689,7 @@ export function StarMapGenerator() {
                     value={config.time}
                     onChange={(e) => setConfig((prev) => ({ ...prev, time: e.target.value }))}
                     style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    className="h-8 text-xs"
                   />
                 </div>
               </CardContent>
@@ -661,8 +703,8 @@ export function StarMapGenerator() {
                   Location
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="space-y-2">
+              <CardContent className="space-y-2">
+                <div className="space-y-1">
                   <Label className="text-sm font-medium" style={{ color: colors.text }}>
                     City
                   </Label>
@@ -672,6 +714,7 @@ export function StarMapGenerator() {
                       value={cityQuery}
                       onChange={(e) => setCityQuery(e.target.value)}
                       style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                      className="h-8 text-xs"
                     />
                     {cityQuery && (
                       <div
@@ -702,7 +745,7 @@ export function StarMapGenerator() {
                     Selected: {config.city} ({config.latitude.toFixed(4)}, {config.longitude.toFixed(4)})
                   </div>
                 </div>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
                     <Label htmlFor="latitude" className="text-xs font-medium" style={{ color: colors.text }}>
                       Latitude
@@ -714,7 +757,7 @@ export function StarMapGenerator() {
                       value={config.latitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, latitude: Number.parseFloat(e.target.value) }))}
                       style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
-                      className="text-xs"
+                      className="text-xs h-8"
                     />
                   </div>
                   <div className="space-y-2">
@@ -728,7 +771,7 @@ export function StarMapGenerator() {
                       value={config.longitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, longitude: Number.parseFloat(e.target.value) }))}
                       style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
-                      className="text-xs"
+                      className="text-xs h-8"
                     />
                   </div>
                 </div>
@@ -836,7 +879,7 @@ export function StarMapGenerator() {
             </div>
           </div>
 
-          <div className="lg:col-span-3">
+          <div className="lg:col-span-3 order-1 lg:order-2">
             <div className="max-w-2xl mx-auto">
               {/* Poster Container */}
               <div
@@ -900,13 +943,13 @@ export function StarMapGenerator() {
                   </h2>
 
                   {/* Names */}
-                  <p data-subtitle className="text-base sm:text-lg font-semibold tracking-[0.12em] sm:tracking-[0.2em] break-words"
-                    style={{ color: colors.text, marginTop: 12, marginBottom: 6 }}>
+                  <p data-subtitle className="text-[11px] sm:text-base font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words"
+                    style={{ color: colors.text, marginTop: 10, marginBottom: 4 }}>
                     {config.customSubtitle}
                   </p>
 
                   {/* Date and Location */}
-                  <p data-date className="text-[10px] tracking-[0.12em] leading-tight" style={{ color: colors.subtext, marginTop: 4 }}>
+                  <p data-date className="text-[9px] sm:text-[10px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: 2 }}>
                     {(() => {
                       // Render date without timezone shifting by constructing local midnight
                       try {
@@ -923,8 +966,8 @@ export function StarMapGenerator() {
                 </div>
 
                 {/* Bottom Text (hidden on export) */}
-                <div className="absolute bottom-10 left-0 right-0 text-center" data-noexport>
-                  <p className="font-semibold tracking-[0.3em] text-[9px] sm:text-xs md:text-sm" style={{ color: colors.subtext, marginBottom: 8 }}>
+                <div className="absolute bottom-12 left-4 right-4 text-center" data-noexport>
+                  <p className="font-semibold tracking-[0.28em] text-[8px] sm:text-[9px] md:text-xs" style={{ color: colors.subtext, marginBottom: 6 }}>
                     MAKE YOUR OWN SKY.
                     <br />
                     MAKE IT YOURS.
@@ -941,42 +984,7 @@ export function StarMapGenerator() {
                 </div>
               </div>
 
-              {/* Download Button */}
-              <div className="flex justify-center mt-6 gap-3">
-                {hasPaid && paidHash === configHash ? (
-                  <Button
-                    onClick={downloadPoster}
-                    disabled={isDownloading}
-                    variant="outline"
-                    style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder, color: colors.text }}
-                  >
-                    {isDownloading ? (
-                      <>
-                        <div className="w-4 h-4 border-2 border-current/30 border-t-current rounded-full animate-spin mr-2" />
-                        Downloading...
-                      </>
-                    ) : (
-                      <>
-                        <Download className="w-4 h-4 mr-2" />
-                        Download Poster
-                      </>
-                    )}
-                  </Button>
-                ) : (
-                  <>
-                    <Button onClick={beginCheckout} className="px-5 py-2 shadow-lg">
-                      <ShoppingCart className="w-4 h-4 mr-2" />
-                      {couponStatus === "valid" ? "Download (Coupon)" : "Checkout ($7)"}
-                    </Button>
-                    <Button asChild variant="outline">
-                      <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
-                        <ShoppingCart className="w-4 h-4 mr-2" />
-                        Go to Checkout
-                      </a>
-                    </Button>
-                  </>
-                )}
-              </div>
+              {/* Checkout buttons are shown at the bottom of the controls column */}
             </div>
           </div>
         </div>
