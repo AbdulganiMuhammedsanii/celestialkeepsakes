@@ -23,7 +23,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: "usd",
             product_data: { name: "Custom Star Map PDF" },
-            unit_amount: 700,
+            unit_amount: 699,
           },
           quantity: 1,
         },

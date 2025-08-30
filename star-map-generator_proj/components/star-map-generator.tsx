@@ -311,6 +311,7 @@ export function StarMapGenerator() {
             customSubtitle: config.customSubtitle,
             titleFont: config.titleFont,
             darkMode: config.darkMode,
+            printSize: config.printSize,
           }),
         )
       } catch { }
@@ -341,6 +342,7 @@ export function StarMapGenerator() {
           customSubtitle: config.customSubtitle,
           titleFont: config.titleFont,
           darkMode: config.darkMode,
+          printSize: config.printSize,
         })
       )
     } catch { }
@@ -618,11 +620,10 @@ export function StarMapGenerator() {
                 <>
                   <Button onClick={beginCheckout} className="w-full sm:w-auto px-5 py-2 shadow-lg">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    {couponStatus === "valid" ? "Download (Coupon)" : "Purchase File ($7)"}
+                    {couponStatus === "valid" ? "Download (Coupon)" : "Instant Checkout ($6.99)"}
                   </Button>
                   {/* Physical print order button */}
                   <Button
-                    variant="outline"
                     onClick={async () => {
                       const size = config.printSize || "8x8"
                       const res = await fetch("/api/create-print-checkout-session", {
@@ -635,15 +636,48 @@ export function StarMapGenerator() {
                         window.location.href = data.url
                       }
                     }}
-                    className="w-full sm:w-auto"
+                    className="w-full sm:w-auto px-5 py-2 btn-gradient shadow-lg"
                   >
                     Order Print ({(config.printSize === "8x8" || config.printSize === "8x10") ? "$19.99" : "$29.99"})
                   </Button>
-                  <Button asChild variant="outline" className="w-full sm:w-auto">
-                    <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
+                  {/* Add to Cart for print */}
+                  <Button
+                    variant="outline"
+                    onClick={() => {
+                      try {
+                        const size = config.printSize || "8x8"
+                        const price = (size === "8x8" || size === "8x10") ? 1999 : 2999
+                        const cart = { print: { size, price } }
+                        window.localStorage?.setItem("ck_cart", JSON.stringify(cart))
+                        window.localStorage?.setItem(
+                          `ck_checkout_${configHash}`,
+                          JSON.stringify({
+                            date: config.date,
+                            time: config.time,
+                            city: config.city,
+                            latitude: config.latitude,
+                            longitude: config.longitude,
+                            theme: config.theme,
+                            showConstellations: config.showConstellations,
+                            showGrid: config.showGrid,
+                            showGraticule: config.showGraticule,
+                            showLabels: config.showLabels,
+                            customTitle: config.customTitle,
+                            customSubtitle: config.customSubtitle,
+                            titleFont: config.titleFont,
+                            darkMode: config.darkMode,
+                            printSize: size,
+                          }),
+                        )
+                        window.location.href = `/checkout?h=${configHash}&size=${encodeURIComponent(size)}`
+                      } catch { }
+                    }}
+                    className="w-full sm:w-auto"
+                  >
+                    <>
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Go to Purchase
-                    </a>
+                      Add Print to Cart
+                    </>
                   </Button>
                 </>
               )}
