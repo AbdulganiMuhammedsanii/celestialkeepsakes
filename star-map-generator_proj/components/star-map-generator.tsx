@@ -26,6 +26,7 @@ interface StarMapConfig {
   customSubtitle: string
   titleFont?: "playfair" | "cormorant" | "greatVibes" | "parisienne"
   darkMode: boolean // Added dark mode option
+  printSize?: "8x8" | "8x10" | "16x16" | "16x20"
 }
 
 const themes = {
@@ -63,6 +64,7 @@ export function StarMapGenerator() {
     customSubtitle: "PHILIPPE & MARIE",
     titleFont: "parisienne",
     darkMode: true, // Default to dark mode in the design box
+    printSize: "8x8",
   })
 
   const [isGenerating, setIsGenerating] = useState(false)
@@ -259,6 +261,7 @@ export function StarMapGenerator() {
       customSubtitle: "PHILIPPE & MARIE",
       titleFont: "parisienne",
       darkMode: true, // Default to dark mode on reset
+      printSize: "8x8",
     })
     setCurrentMapId(null)
   }
@@ -277,6 +280,7 @@ export function StarMapGenerator() {
       title: config.customTitle,
       subtitle: config.customSubtitle,
       darkMode: config.darkMode,
+      printSize: config.printSize,
     }
     const json = JSON.stringify(data)
     let h = 0
@@ -430,6 +434,8 @@ export function StarMapGenerator() {
     cardBorder: "var(--color-border)",
     inputBg: "var(--color-input)",
   }
+
+  const isSquare = config.printSize === "8x8" || config.printSize === "16x16"
 
   return (
     <div className="min-h-screen">
@@ -592,6 +598,24 @@ export function StarMapGenerator() {
                   <Button onClick={beginCheckout} className="px-5 py-2 shadow-lg">
                     <ShoppingCart className="w-4 h-4 mr-2" />
                     {couponStatus === "valid" ? "Download (Coupon)" : "Checkout ($7)"}
+                  </Button>
+                  {/* Physical print order button */}
+                  <Button
+                    variant="outline"
+                    onClick={async () => {
+                      const size = config.printSize || "8x8"
+                      const res = await fetch("/api/create-print-checkout-session", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ configHash, printSize: size }),
+                      })
+                      const data = await res.json()
+                      if (res.ok) {
+                        window.location.href = data.url
+                      }
+                    }}
+                  >
+                    Order Print ({(config.printSize === "8x8" || config.printSize === "8x10") ? "$19.99" : "$29.99"})
                   </Button>
                   <Button asChild variant="outline">
                     <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
@@ -853,6 +877,25 @@ export function StarMapGenerator() {
                       onCheckedChange={(checked) => setConfig((prev) => ({ ...prev, showLabels: checked }))}
                     />
                   </div>
+                  {/* Print Size / Aspect Ratio */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium" style={{ color: ui.text }}>
+                      Print Size
+                    </Label>
+                    <div className="grid grid-cols-2 gap-2">
+                      {(["8x8", "8x10", "16x16", "16x20"] as const).map((size) => (
+                        <Button
+                          key={size}
+                          variant={config.printSize === size ? "default" : "outline"}
+                          size="sm"
+                          onClick={() => setConfig((p) => ({ ...p, printSize: size }))}
+                        >
+                          {size}
+                        </Button>
+                      ))}
+                    </div>
+                    <p className="text-xs text-muted-foreground">Squares preview as 1:1; rectangles preview as 4:5.</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
@@ -897,8 +940,9 @@ export function StarMapGenerator() {
                 style={{
                   backgroundColor: colors.posterBg,
                   border: `2px solid ${colors.border}`,
-                  aspectRatio: "3/4",
+                  aspectRatio: (config.printSize === "8x8" || config.printSize === "16x16") ? "1/1" : "4/5",
                 }}
+                data-aspect={isSquare ? "square" : "portrait"}
               >
                 {/* Enhanced frame: double inner borders */}
                 <div className="absolute inset-6 sm:inset-7 md:inset-8 border" style={{ borderColor: colors.border }} />
@@ -915,24 +959,21 @@ export function StarMapGenerator() {
                 />
 
                 {/* Star Map Circle */}
-                <div className="flex justify-center items-center" style={{ height: "56%" }}>
+                <div className="flex justify-center items-start" style={{ height: isSquare ? "52%" : "56%" }}>
                   <div
-                    className="relative flex-shrink-0"
-                    style={{
-                      width: "min(480px, calc(100% - 6rem))",
-                      maxWidth: "min(480px, calc(100% - 6rem))",
-                      aspectRatio: "1 / 1",
-                      marginTop: "26px",
-                    }}
+                    className={`relative flex-shrink-0 ${isSquare
+                      ? "aspect-[1/1] w-[47%] sm:w-[52%] md:w-[58%] lg:w-[60%] mt-2 sm:mt-4 lg:mt-8"
+                      : "aspect-[1/1] w-[67%] sm:w-[69%] md:w-[71%] lg:w-[73%] mt-3 sm:mt-4"
+                      }`}
                   >
                     <StarFieldSVG config={config} isGenerating={isGenerating} />
                   </div>
                 </div>
 
-                <div className="text-center mt-6 sm:mt-8 mb-6 sm:mb-8 px-3" data-export-scope>
+                <div className="text-center mt-8 sm:mt-10 mb-24 sm:mb-10 px-3" data-export-scope>
                   <h2
                     data-title
-                    className="mb-4 text-3xl sm:text-4xl md:text-5xl mt-10 sm:mt-16 md:mt-24"
+                    className="mb-4 text-2xl sm:text-3xl md:text-4xl mt-10 sm:mt-16 md:mt-24"
                     style={{
                       fontFamily:
                         config.titleFont === "cormorant"
@@ -952,13 +993,13 @@ export function StarMapGenerator() {
                   </h2>
 
                   {/* Names */}
-                  <p data-subtitle className="text-[11px] sm:text-base font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words"
-                    style={{ color: colors.text, marginTop: 14, marginBottom: 6 }}>
+                  <p data-subtitle className="text-[10px] sm:text-sm font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words"
+                    style={{ color: colors.text, marginTop: isSquare ? 8 : 14, marginBottom: isSquare ? 4 : 6 }}>
                     {config.customSubtitle}
                   </p>
 
                   {/* Date and Location */}
-                  <p data-date className="text-[9px] sm:text-[10px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: 6 }}>
+                  <p data-date className="text-[8px] sm:text-[9px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: isSquare ? 4 : 6 }}>
                     {(() => {
                       // Render date without timezone shifting by constructing local midnight
                       try {
@@ -975,8 +1016,8 @@ export function StarMapGenerator() {
                 </div>
 
                 {/* Bottom Text (hidden on export) */}
-                <div className="absolute bottom-12 left-4 right-4 text-center" data-noexport>
-                  <p className="font-semibold tracking-[0.28em] text-[8px] sm:text-[9px] md:text-xs" style={{ color: colors.subtext, marginBottom: 6 }}>
+                <div className="absolute bottom-14 left-2 right-2 text-center" data-noexport>
+                  <p className="font-semibold tracking-[0.28em] text-[7px] sm:text-[8px] md:text-[10px]" style={{ color: colors.subtext, marginBottom: 10 }}>
                     MAKE YOUR OWN SKY.
                     <br />
                     MAKE IT YOURS.
@@ -984,7 +1025,7 @@ export function StarMapGenerator() {
                   {!(hasPaid && paidHash === configHash) && (
                     <div
                       aria-label="Watermark"
-                      className="mx-auto inline-block px-2 py-1 text-[9px] sm:text-[10px] uppercase tracking-widest border rounded"
+                      className="mx-auto inline-block px-1.5 py-0.5 text-[7px] sm:text-[9px] uppercase tracking-widest border rounded"
                       style={{ color: colors.subtext, borderColor: colors.cardBorder }}
                     >
                       WATERMARK — Removed after purchase

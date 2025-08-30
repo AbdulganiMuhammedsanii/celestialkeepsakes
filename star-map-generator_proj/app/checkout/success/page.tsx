@@ -8,10 +8,11 @@ export default function SuccessPage() {
     const url = new URL(window.location.href)
     const sessionId = url.searchParams.get("session_id")
     const paidHash = url.searchParams.get("h")
+    const isPrint = url.searchParams.get("print") === "1"
     const target = new URL(`/#create`, window.location.origin)
-    if (paidHash) target.searchParams.set("paid", "true")
-    if (paidHash) target.searchParams.set("h", paidHash)
-    // Navigate back to home with params to trigger auto-download
+    if (!isPrint && paidHash) target.searchParams.set("paid", "true")
+    if (!isPrint && paidHash) target.searchParams.set("h", paidHash)
+    // Navigate back to home; auto-download only for digital purchase
     window.location.replace(target.toString())
   }, [])
 

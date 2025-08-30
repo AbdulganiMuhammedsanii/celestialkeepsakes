@@ -274,6 +274,9 @@
   /* lower the whole text block without changing size */
 }
 
+/* Respect container aspect during export (canvas uses container dims) */
+/* (keep aspect-ratio from component inline style) */
+
 /* Hide non-print elements during export */
 [data-export="pdf"] [data-noexport] {
   display: none !important;
