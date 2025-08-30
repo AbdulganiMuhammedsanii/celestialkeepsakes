@@ -63,7 +63,7 @@ export default function RootLayout({
             <a href="/" className="text-lg font-semibold brand-gradient">Celestial Keepsakes</a>
             <nav className="flex gap-6 text-sm">
               <a href="/" className="hover:opacity-80">Home</a>
-              <a href="/shop" className="hover:opacity-80">Shop Now</a>
+              <a href="/shop" className="hover:opacity-80">Shop</a>
               <a href="/faq" className="hover:opacity-80">FAQ</a>
               <a href="/contact" className="hover:opacity-80">Contact</a>
             </nav>

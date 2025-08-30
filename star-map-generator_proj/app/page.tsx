@@ -17,8 +17,8 @@ export default function Home() {
             </p>
             <a href="#create" className="inline-block rounded-md px-6 py-3 btn-gradient text-sm shadow-lg">Create Yours</a>
           </div>
-          <div className="justify-self-end w-full">
-            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md">
+          <div className="justify-self-end w-full md:justify-self-end md:col-start-2 md:col-end-3">
+            <div className="relative w-full max-w-xs sm:max-w-sm md:max-w-md md:ml-auto">
               <div className="absolute -inset-4 sm:-inset-6 rounded-3xl bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 blur-2xl" />
               <Image
                 src={samplePic}
