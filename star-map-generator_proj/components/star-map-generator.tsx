@@ -27,6 +27,7 @@ interface StarMapConfig {
   customSubtitle: string
   titleFont?: "playfair" | "cormorant" | "greatVibes" | "parisienne"
   darkMode: boolean // Added dark mode option
+  deepDark?: boolean
   printSize?: "8x8" | "8x10" | "16x16" | "16x20"
 }
 
@@ -65,6 +66,7 @@ export function StarMapGenerator() {
     customSubtitle: "PHILIPPE & MARIE",
     titleFont: "parisienne",
     darkMode: true, // Default to dark mode in the design box
+    deepDark: false,
     printSize: "8x8",
   })
 
@@ -262,6 +264,7 @@ export function StarMapGenerator() {
       customSubtitle: "PHILIPPE & MARIE",
       titleFont: "parisienne",
       darkMode: true, // Default to dark mode on reset
+      deepDark: false,
       printSize: "8x8",
     })
     setCurrentMapId(null)
@@ -281,6 +284,7 @@ export function StarMapGenerator() {
       title: config.customTitle,
       subtitle: config.customSubtitle,
       darkMode: config.darkMode,
+      deepDark: Boolean(config.deepDark),
       printSize: config.printSize,
     }
     const json = JSON.stringify(data)
@@ -311,6 +315,7 @@ export function StarMapGenerator() {
             customSubtitle: config.customSubtitle,
             titleFont: config.titleFont,
             darkMode: config.darkMode,
+            deepDark: Boolean(config.deepDark),
             printSize: config.printSize,
           }),
         )
@@ -342,6 +347,7 @@ export function StarMapGenerator() {
           customSubtitle: config.customSubtitle,
           titleFont: config.titleFont,
           darkMode: config.darkMode,
+          deepDark: Boolean(config.deepDark),
           printSize: config.printSize,
         })
       )
@@ -388,7 +394,7 @@ export function StarMapGenerator() {
         scale: 1,
         useCORS: true,
         allowTaint: true,
-        backgroundColor: config.darkMode ? "#1e293b" : "#f5f3f0",
+        backgroundColor: config.darkMode ? (config.deepDark ? "#0b1020" : "#1e293b") : "#f5f3f0",
         width: exportWidth,
         height: exportHeight,
         windowWidth: exportWidth,
@@ -430,15 +436,27 @@ export function StarMapGenerator() {
   }
 
   const colors = config.darkMode
-    ? {
-      background: "#1e293b", // navy background
-      posterBg: "#1e293b",
-      border: "#ffffff",
-      text: "#ffffff",
-      subtext: "#e2e8f0",
-      cardBg: "#334155",
-      cardBorder: "#475569",
-    }
+    ? (
+      config.deepDark
+        ? {
+          background: "#0b1020", // much darker
+          posterBg: "#0b1020",
+          border: "#dbeafe", // soft blue-white
+          text: "#f8fafc",
+          subtext: "#cbd5e1",
+          cardBg: "#111827",
+          cardBorder: "#1f2937",
+        }
+        : {
+          background: "#1e293b", // navy background
+          posterBg: "#1e293b",
+          border: "#ffffff",
+          text: "#ffffff",
+          subtext: "#e2e8f0",
+          cardBg: "#334155",
+          cardBorder: "#475569",
+        }
+    )
     : {
       background: "#f5f3f0", // cream background
       posterBg: "#f5f3f0",
@@ -666,6 +684,7 @@ export function StarMapGenerator() {
                             customSubtitle: config.customSubtitle,
                             titleFont: config.titleFont,
                             darkMode: config.darkMode,
+                            deepDark: Boolean(config.deepDark),
                             printSize: size,
                           }),
                         )
@@ -893,6 +912,18 @@ export function StarMapGenerator() {
                       onCheckedChange={(checked) => setConfig((prev) => ({ ...prev, darkMode: checked }))}
                     />
                   </div>
+                  {config.darkMode && (
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor="deepDark" className="text-sm font-medium" style={{ color: ui.text }}>
+                        Deep Dark (sleek)
+                      </Label>
+                      <Switch
+                        id="deepDark"
+                        checked={Boolean(config.deepDark)}
+                        onCheckedChange={(checked) => setConfig((prev) => ({ ...prev, deepDark: checked }))}
+                      />
+                    </div>
+                  )}
                   <div className="flex items-center justify-between">
                     <Label htmlFor="constellations" className="text-sm font-medium" style={{ color: ui.text }}>
                       Constellations
@@ -1009,7 +1040,9 @@ export function StarMapGenerator() {
                   style={{
                     background:
                       config.darkMode
-                        ? "radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.08) 100%)"
+                        ? (config.deepDark
+                          ? "radial-gradient(ellipse at center, rgba(255,255,255,0) 55%, rgba(255,255,255,0.06) 100%)"
+                          : "radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.08) 100%)")
                         : "radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.06) 100%)",
                   }}
                 />
