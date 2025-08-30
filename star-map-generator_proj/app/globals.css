@@ -270,7 +270,7 @@
 
 /* Nudge entire text block lower during PDF export */
 [data-export="pdf"] [data-export-scope] {
-  margin-top: 44px !important;
+  margin-top: 56px !important;
   /* lower the whole text block without changing size */
 }
 
@@ -280,6 +280,49 @@
 /* Hide non-print elements during export */
 [data-export="pdf"] [data-noexport] {
   display: none !important;
+}
+
+/* Ensure circle is centered and sized consistently on export */
+[data-export="pdf"] [data-circle] {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+[data-export="pdf"][data-aspect="square"] [data-circle] {
+  width: 58% !important;
+  margin-top: 24px !important;
+}
+
+[data-export="pdf"][data-aspect="portrait"] [data-circle] {
+  width: 71% !important;
+  margin-top: 32px !important;
+}
+
+/* Desktop-like typography for export regardless of device */
+[data-export="pdf"] [data-title] {
+  font-size: 154px !important;
+}
+
+[data-export="pdf"] [data-subtitle] {
+  font-size: 62px !important;
+  display: block !important;
+  line-height: 1.15 !important;
+}
+
+[data-export="pdf"] [data-date] {
+  font-size: 54px !important;
+  line-height: 1.2 !important;
+}
+
+/* Push text lower for each aspect at export to avoid overlap */
+[data-export="pdf"][data-aspect="square"] [data-export-scope] {
+  /* 4/5 down on a 3000px canvas ≈ 2400px */
+  margin-top: 500px !important;
+}
+
+[data-export="pdf"][data-aspect="portrait"] [data-export-scope] {
+  /* 4/5 down on a 3000px height ≈ 2400px; keep a bit of headroom */
+  margin-top: 600px !important;
 }
 
 [data-exporting="true"] [data-noexport] {

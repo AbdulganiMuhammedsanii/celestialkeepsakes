@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Switch } from "@/components/ui/switch"
 import { StarFieldSVG } from "@/components/star-field-svg"
+import html2canvas from "html2canvas"
 import { AuthButton } from "@/components/auth-button"
 import { MapPin, Calendar, Palette, Download, RotateCcw, Moon, Sun, Save, ShoppingCart } from "lucide-react"
 
@@ -360,21 +361,38 @@ export function StarMapGenerator() {
 
     try {
       setIsDownloading(true)
-      // Temporarily mark export state so non-print elements are hidden
-      posterRef.current.setAttribute("data-export", "pdf")
-      posterRef.current.setAttribute("data-exporting", "true")
+      // Decide target export dimensions based on aspect ratio (device-independent quality)
+      const isSquare = config.printSize === "8x8" || config.printSize === "16x16"
+      const longEdgePx = 3000
+      const exportWidth = isSquare ? longEdgePx : Math.round(longEdgePx * 0.8) // 4:5 → width 80% of height
+      const exportHeight = longEdgePx
 
-      // Dynamically import html2canvas to avoid SSR issues
-      const html2canvas = (await import("html2canvas")).default
+      // Create an offscreen clone sized to the export pixel dimensions for crisp output
+      const original = posterRef.current
+      const clone = original.cloneNode(true) as HTMLElement
+      clone.style.position = "fixed"
+      clone.style.left = "-10000px"
+      clone.style.top = "0"
+      clone.style.width = `${exportWidth}px`
+      clone.style.height = `${exportHeight}px`
+      clone.style.maxWidth = "none"
+      clone.style.maxHeight = "none"
+      clone.setAttribute("data-export", "pdf")
+      clone.setAttribute("data-export-desktop", "true")
+      document.body.appendChild(clone)
 
-      // Create a high-resolution canvas
-      const canvas = await html2canvas(posterRef.current, {
-        scale: 4, // 4x resolution for ultra quality
+      // Render the offscreen high-DPI clone without relying on viewport size
+      const canvas = await html2canvas(clone, {
+        scale: 1,
         useCORS: true,
         allowTaint: true,
         backgroundColor: config.darkMode ? "#1e293b" : "#f5f3f0",
-        width: posterRef.current.offsetWidth,
-        height: posterRef.current.offsetHeight,
+        width: exportWidth,
+        height: exportHeight,
+        windowWidth: exportWidth,
+        windowHeight: exportHeight,
+        scrollX: 0,
+        scrollY: 0,
       })
 
       // Convert to blob and download
@@ -384,7 +402,8 @@ export function StarMapGenerator() {
             const url = URL.createObjectURL(blob)
             const link = document.createElement("a")
             link.href = url
-            link.download = `star-map-${config.customTitle.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-${config.date}.png`
+            const sizeLabel = isSquare ? (config.printSize || "square") : (config.printSize || "4x5")
+            link.download = `star-map-${config.customTitle.replace(/[^a-z0-9]/gi, "-").toLowerCase()}-${config.date}-${sizeLabel}.png`
             document.body.appendChild(link)
             link.click()
             document.body.removeChild(link)
@@ -397,11 +416,13 @@ export function StarMapGenerator() {
     } catch (error) {
       console.error("Failed to download poster:", error)
     } finally {
-      // Clean export flags
-      if (posterRef.current) {
-        posterRef.current.removeAttribute("data-export")
-        posterRef.current.removeAttribute("data-exporting")
-      }
+      // Clean up any offscreen clones and export flags
+      try {
+        const clones = document.querySelectorAll('[data-export="pdf"]')
+        clones.forEach((n) => {
+          if (n !== posterRef.current && n.parentElement) n.parentElement.removeChild(n)
+        })
+      } catch { }
       setIsDownloading(false)
     }
   }
@@ -440,7 +461,7 @@ export function StarMapGenerator() {
   return (
     <div className="min-h-screen">
       <header className="border-b" style={{ borderColor: ui.cardBorder }}>
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 sm:py-8 py-6 pt-[max(env(safe-area-inset-top),1rem)]">
           <div className="flex justify-between items-start mb-6">
             <div></div>
             <AuthButton />
@@ -573,7 +594,7 @@ export function StarMapGenerator() {
             </Card>
 
             {/* Checkout / Download Buttons (bottom of controls after all fields and coupon) */}
-            <div className="order-[999] flex justify-center lg:justify-start gap-3">
+            <div className="order-[999] flex flex-wrap gap-3 justify-center lg:justify-start">
               {hasPaid && paidHash === configHash ? (
                 <Button
                   onClick={downloadPoster}
@@ -595,9 +616,9 @@ export function StarMapGenerator() {
                 </Button>
               ) : (
                 <>
-                  <Button onClick={beginCheckout} className="px-5 py-2 shadow-lg">
+                  <Button onClick={beginCheckout} className="w-full sm:w-auto px-5 py-2 shadow-lg">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    {couponStatus === "valid" ? "Download (Coupon)" : "Checkout ($7)"}
+                    {couponStatus === "valid" ? "Download (Coupon)" : "Purchase File ($7)"}
                   </Button>
                   {/* Physical print order button */}
                   <Button
@@ -614,13 +635,14 @@ export function StarMapGenerator() {
                         window.location.href = data.url
                       }
                     }}
+                    className="w-full sm:w-auto"
                   >
                     Order Print ({(config.printSize === "8x8" || config.printSize === "8x10") ? "$19.99" : "$29.99"})
                   </Button>
-                  <Button asChild variant="outline">
+                  <Button asChild variant="outline" className="w-full sm:w-auto">
                     <a href={`/checkout?h=${configHash}`} className="px-4 py-2">
                       <ShoppingCart className="w-4 h-4 mr-2" />
-                      Go to Checkout
+                      Go to Purchase
                     </a>
                   </Button>
                 </>
@@ -646,7 +668,7 @@ export function StarMapGenerator() {
                     onChange={(e) => setConfig((prev) => ({ ...prev, customTitle: e.target.value }))}
                     style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                     placeholder="Now & Forever"
-                    className="h-8 text-xs"
+                    className="h-11 text-[16px] md:h-8 md:text-xs"
                   />
                 </div>
                 <div className="space-y-1">
@@ -656,7 +678,7 @@ export function StarMapGenerator() {
                         Title Font
                       </Label>
                       <Select value={config.titleFont} onValueChange={(value: any) => setConfig((p) => ({ ...p, titleFont: value }))}>
-                        <SelectTrigger className="h-8 text-xs" style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}>
+                        <SelectTrigger className="h-11 text-[16px] md:h-8 md:text-xs" style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -674,7 +696,7 @@ export function StarMapGenerator() {
                     onChange={(e) => setConfig((prev) => ({ ...prev, customSubtitle: e.target.value }))}
                     style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                     placeholder="PHILIPPE & MARIE"
-                    className="h-8 text-xs"
+                    className="h-11 text-[16px] md:h-8 md:text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
@@ -709,7 +731,7 @@ export function StarMapGenerator() {
                     value={config.date}
                     onChange={(e) => setConfig((prev) => ({ ...prev, date: e.target.value }))}
                     style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
-                    className="h-8 text-xs"
+                    className="h-11 text-[16px] md:h-8 md:text-xs"
                   />
                 </div>
                 <div className="space-y-2">
@@ -722,7 +744,7 @@ export function StarMapGenerator() {
                     value={config.time}
                     onChange={(e) => setConfig((prev) => ({ ...prev, time: e.target.value }))}
                     style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
-                    className="h-8 text-xs"
+                    className="h-11 text-[16px] md:h-8 md:text-xs"
                   />
                 </div>
               </CardContent>
@@ -747,7 +769,7 @@ export function StarMapGenerator() {
                       value={cityQuery}
                       onChange={(e) => setCityQuery(e.target.value)}
                       style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
-                      className="h-8 text-xs"
+                      className="h-11 text-[16px] md:h-8 md:text-xs"
                     />
                     {cityQuery && (
                       <div
@@ -790,7 +812,7 @@ export function StarMapGenerator() {
                       value={config.latitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, latitude: Number.parseFloat(e.target.value) }))}
                       style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
-                      className="text-xs h-8"
+                      className="text-[16px] h-11 md:text-xs md:h-8"
                     />
                   </div>
                   <div className="space-y-2">
@@ -804,7 +826,7 @@ export function StarMapGenerator() {
                       value={config.longitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, longitude: Number.parseFloat(e.target.value) }))}
                       style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
-                      className="text-xs h-8"
+                      className="text-[16px] h-11 md:text-xs md:h-8"
                     />
                   </div>
                 </div>
@@ -961,19 +983,20 @@ export function StarMapGenerator() {
                 {/* Star Map Circle */}
                 <div className="flex justify-center items-start" style={{ height: isSquare ? "52%" : "56%" }}>
                   <div
+                    data-circle
                     className={`relative flex-shrink-0 ${isSquare
-                      ? "aspect-[1/1] w-[47%] sm:w-[52%] md:w-[58%] lg:w-[60%] mt-2 sm:mt-4 lg:mt-8"
-                      : "aspect-[1/1] w-[67%] sm:w-[69%] md:w-[71%] lg:w-[73%] mt-3 sm:mt-4"
+                      ? "aspect-[1/1] w-[50%] sm:w-[52%] md:w-[58%] lg:w-[60%] mt-6 sm:mt-4 lg:mt-8"
+                      : "aspect-[1/1] w-[68%] sm:w-[69%] md:w-[71%] lg:w-[73%] mt-8 sm:mt-4"
                       }`}
                   >
                     <StarFieldSVG config={config} isGenerating={isGenerating} />
                   </div>
                 </div>
 
-                <div className="text-center mt-8 sm:mt-10 mb-24 sm:mb-10 px-3" data-export-scope>
+                <div className="mt-2 sm:mt-10 mb-14 sm:mb-10 px-3 flex flex-col items-center text-center" data-export-scope>
                   <h2
                     data-title
-                    className="mb-4 text-2xl sm:text-3xl md:text-4xl mt-10 sm:mt-16 md:mt-24"
+                    className="order-1 mb-2 sm:mb-4 text-lg sm:text-3xl md:text-4xl mt-8 sm:mt-16 md:mt-24"
                     style={{
                       fontFamily:
                         config.titleFont === "cormorant"
@@ -992,16 +1015,9 @@ export function StarMapGenerator() {
                     {config.customTitle}
                   </h2>
 
-                  {/* Names */}
-                  <p data-subtitle className="text-[10px] sm:text-sm font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words"
-                    style={{ color: colors.text, marginTop: isSquare ? 8 : 14, marginBottom: isSquare ? 4 : 6 }}>
-                    {config.customSubtitle}
-                  </p>
-
-                  {/* Date and Location */}
-                  <p data-date className="text-[8px] sm:text-[9px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: isSquare ? 4 : 6 }}>
+                  {/* Date and Location (shown second on mobile) */}
+                  <p data-date className="order-2 text-[7px] sm:text-[9px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: 0 }}>
                     {(() => {
-                      // Render date without timezone shifting by constructing local midnight
                       try {
                         const d = new Date(`${config.date}T00:00:00`)
                         return d
@@ -1013,19 +1029,23 @@ export function StarMapGenerator() {
                     })()}
                     , {config.city.toUpperCase()}
                   </p>
+
+                  {/* Names (smaller on iPhone square) */}
+                  <p
+                    data-subtitle
+                    className={`order-3 ${isSquare ? "text-[7px]" : "text-[9px]"} sm:text-sm font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words`}
+                    style={{ color: colors.text, marginTop: 6, marginBottom: 4 }}
+                  >
+                    {config.customSubtitle}
+                  </p>
                 </div>
 
                 {/* Bottom Text (hidden on export) */}
-                <div className="absolute bottom-14 left-2 right-2 text-center" data-noexport>
-                  <p className="font-semibold tracking-[0.28em] text-[7px] sm:text-[8px] md:text-[10px]" style={{ color: colors.subtext, marginBottom: 10 }}>
-                    MAKE YOUR OWN SKY.
-                    <br />
-                    MAKE IT YOURS.
-                  </p>
+                <div className="absolute bottom-2 sm:bottom-16 left-2 right-2 text-center" data-noexport>
                   {!(hasPaid && paidHash === configHash) && (
                     <div
                       aria-label="Watermark"
-                      className="mx-auto inline-block px-1.5 py-0.5 text-[7px] sm:text-[9px] uppercase tracking-widest border rounded"
+                      className="mx-auto inline-block px-0.5 py-[1px] text-[4px] sm:text-[9px] uppercase tracking-widest border rounded"
                       style={{ color: colors.subtext, borderColor: colors.cardBorder }}
                     >
                       WATERMARK — Removed after purchase

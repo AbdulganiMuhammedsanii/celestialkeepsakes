@@ -55,10 +55,11 @@ export default function RootLayout({
     <html lang="en" className="dark" suppressHydrationWarning>
       <head>
         <meta name="google-adsense-account" content="ca-pub-4896735734946710" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
       </head>
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${dancingScript.variable} ${playfairDisplay.variable} ${cormorant.variable} ${greatVibes.variable} ${parisienne.variable}`}>
         <header className="sticky top-0 z-40 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="container mx-auto px-4 sm:py-4 py-3 pt-[max(env(safe-area-inset-top),0.75rem)] flex items-center justify-between">
             <a href="/" className="text-lg font-semibold brand-gradient">Celestial Keepsakes</a>
             <nav className="flex gap-6 text-sm">
               <a href="/" className="hover:opacity-80">Home</a>
@@ -68,7 +69,7 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
-        <main className="section-gradient min-h-screen">{children}</main>
+        <main className="section-gradient min-h-[100dvh] overflow-x-hidden">{children}</main>
         <footer className="border-t mt-16">
           <div className="container mx-auto px-4 py-10 text-sm text-muted-foreground">
             <div className="flex flex-col md:flex-row items-center justify-between gap-4">
