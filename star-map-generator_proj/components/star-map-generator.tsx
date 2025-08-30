@@ -59,7 +59,7 @@ export function StarMapGenerator() {
     showGrid: false,
     showGraticule: true,
     showLabels: true,
-    customTitle: "The night we met",
+    customTitle: "Now & Forever",
     customSubtitle: "PHILIPPE & MARIE",
     titleFont: "parisienne",
     darkMode: true, // Default to dark mode in the design box
@@ -255,7 +255,7 @@ export function StarMapGenerator() {
       showGrid: false,
       showGraticule: true,
       showLabels: true,
-      customTitle: "The night we met",
+      customTitle: "Now & Forever",
       customSubtitle: "PHILIPPE & MARIE",
       titleFont: "parisienne",
       darkMode: true, // Default to dark mode on reset
@@ -422,22 +422,31 @@ export function StarMapGenerator() {
       cardBorder: "#d4d0c8",
     }
 
+  // Editor UI colors (do not change with poster darkMode)
+  const ui = {
+    text: "var(--color-foreground)",
+    muted: "var(--color-muted-foreground)",
+    cardBg: "var(--color-card)",
+    cardBorder: "var(--color-border)",
+    inputBg: "var(--color-input)",
+  }
+
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
-      <header className="border-b" style={{ borderColor: colors.cardBorder, backgroundColor: colors.background }}>
+    <div className="min-h-screen">
+      <header className="border-b" style={{ borderColor: ui.cardBorder }}>
         <div className="container mx-auto px-4 py-8">
           <div className="flex justify-between items-start mb-6">
             <div></div>
             <AuthButton />
           </div>
           <div className="text-center space-y-2">
-            <h1 className="text-3xl font-bold" style={{ color: colors.text }}>
+            <h1 className="text-3xl font-bold">
               Celestial Star Map
             </h1>
-            <p className="text-base" style={{ color: colors.subtext }}>
+            <p className="text-base text-muted-foreground">
               Create Beautiful Astronomical Posters
             </p>
-            <p className="text-xs max-w-2xl mx-auto" style={{ color: colors.subtext }}>
+            <p className="text-xs max-w-2xl mx-auto text-muted-foreground">
               Generate personalized circular star maps showing the exact night sky from any location and date
             </p>
           </div>
@@ -449,10 +458,10 @@ export function StarMapGenerator() {
           {/* Controls Panel (mobile after poster) */}
           <div className="lg:col-span-2 order-2 lg:order-1 flex flex-col gap-3 pr-2">
             {enablePersistence && (
-              <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+              <Card style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
                 <CardHeader className="pb-4">
-                  <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
-                    <Save className="w-4 h-4" style={{ color: colors.subtext }} />
+                  <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
+                    <Save className="w-4 h-4" style={{ color: ui.muted }} />
                     Save & Load
                   </CardTitle>
                 </CardHeader>
@@ -461,7 +470,7 @@ export function StarMapGenerator() {
                     onClick={saveCurrentMap}
                     disabled={isSaving}
                     className="w-full"
-                    style={{ backgroundColor: colors.text, color: colors.background }}
+
                   >
                     {isSaving ? (
                       <>
@@ -478,7 +487,7 @@ export function StarMapGenerator() {
 
                   {savedMaps.length > 0 && (
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium" style={{ color: colors.text }}>
+                      <Label className="text-sm font-medium" style={{ color: ui.text }}>
                         Saved Maps
                       </Label>
                       <div className="max-h-32 overflow-y-auto space-y-1">
@@ -488,8 +497,8 @@ export function StarMapGenerator() {
                             onClick={() => loadMap(map)}
                             className="w-full text-left p-2 rounded text-xs hover:opacity-80 transition-opacity"
                             style={{
-                              backgroundColor: currentMapId === map.id ? colors.text : colors.cardBorder,
-                              color: currentMapId === map.id ? colors.background : colors.text,
+                              backgroundColor: currentMapId === map.id ? ui.text : ui.cardBorder,
+                              color: currentMapId === map.id ? '#ffffff' : ui.text,
                             }}
                           >
                             <div className="font-medium truncate">{map.title}</div>
@@ -506,9 +515,9 @@ export function StarMapGenerator() {
             )}
 
             {/* Coupon */}
-            <Card className="order-[998]" style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            <Card className="order-[998]" style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
                   Coupon
                 </CardTitle>
               </CardHeader>
@@ -522,7 +531,7 @@ export function StarMapGenerator() {
                       setCouponStatus("idle")
                     }}
                     className="h-8 text-xs px-2"
-                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                   />
                   <Button
                     variant="outline"
@@ -543,16 +552,16 @@ export function StarMapGenerator() {
                       }
                     }}
                     disabled={couponStatus === "checking"}
-                    style={{ borderColor: colors.cardBorder, color: colors.text }}
+                    style={{ borderColor: ui.cardBorder, color: ui.text }}
                   >
                     {couponStatus === "checking" ? "Checking..." : "Apply"}
                   </Button>
                 </div>
                 {couponStatus === "valid" && (
-                  <div className="text-[10px]" style={{ color: colors.subtext }}>Coupon applied. You can download without payment.</div>
+                  <div className="text-[10px]" style={{ color: ui.muted }}>Coupon applied. You can download without payment.</div>
                 )}
                 {couponStatus === "invalid" && (
-                  <div className="text-[10px]" style={{ color: colors.subtext }}>Invalid coupon code.</div>
+                  <div className="text-[10px]" style={{ color: ui.muted }}>Invalid coupon code.</div>
                 )}
               </CardContent>
             </Card>
@@ -564,7 +573,7 @@ export function StarMapGenerator() {
                   onClick={downloadPoster}
                   disabled={isDownloading}
                   variant="outline"
-                  style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder, color: colors.text }}
+
                 >
                   {isDownloading ? (
                     <>
@@ -596,34 +605,34 @@ export function StarMapGenerator() {
 
             {/* (No checkout buttons here; kept at bottom under poster) */}
 
-            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            <Card style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
                   Custom Text
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <Label htmlFor="customTitle" className="text-sm font-medium" style={{ color: colors.text }}>
+                  <Label htmlFor="customTitle" className="text-sm font-medium" style={{ color: ui.text }}>
                     Title (Script Text)
                   </Label>
                   <Input
                     id="customTitle"
                     value={config.customTitle}
                     onChange={(e) => setConfig((prev) => ({ ...prev, customTitle: e.target.value }))}
-                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
-                    placeholder="The night we met"
+                    style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
+                    placeholder="Now & Forever"
                     className="h-8 text-xs"
                   />
                 </div>
                 <div className="space-y-1">
                   <div className="grid grid-cols-2 gap-2">
                     <div className="space-y-2">
-                      <Label className="text-sm font-medium" style={{ color: colors.text }}>
+                      <Label className="text-sm font-medium" style={{ color: ui.text }}>
                         Title Font
                       </Label>
                       <Select value={config.titleFont} onValueChange={(value: any) => setConfig((p) => ({ ...p, titleFont: value }))}>
-                        <SelectTrigger className="h-8 text-xs" style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}>
+                        <SelectTrigger className="h-8 text-xs" style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}>
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -639,14 +648,14 @@ export function StarMapGenerator() {
                     id="customSubtitle"
                     value={config.customSubtitle}
                     onChange={(e) => setConfig((prev) => ({ ...prev, customSubtitle: e.target.value }))}
-                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                     placeholder="PHILIPPE & MARIE"
                     className="h-8 text-xs"
                   />
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
-                    <Label className="text-sm font-medium" style={{ color: colors.text }}>Quick Presets</Label>
+                    <Label className="text-sm font-medium" style={{ color: ui.text }}>Quick Presets</Label>
                     <div className="flex flex-wrap gap-2">
                       <Button size="sm" variant="outline" onClick={() => setConfig((p) => ({ ...p, darkMode: true, showConstellations: true, showGrid: false }))}>Night Sky</Button>
                       <Button size="sm" variant="outline" onClick={() => setConfig((p) => ({ ...p, darkMode: false, showConstellations: false, showGrid: false }))}>Minimal</Button>
@@ -658,16 +667,16 @@ export function StarMapGenerator() {
             </Card>
 
             {/* Date & Time */}
-            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            <Card style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
-                  <Calendar className="w-4 h-4" style={{ color: colors.subtext }} />
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
+                  <Calendar className="w-4 h-4" style={{ color: ui.muted }} />
                   Date & Time
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-2">
-                  <Label htmlFor="date" className="text-sm font-medium" style={{ color: colors.text }}>
+                  <Label htmlFor="date" className="text-sm font-medium" style={{ color: ui.text }}>
                     Date
                   </Label>
                   <Input
@@ -675,12 +684,12 @@ export function StarMapGenerator() {
                     type="date"
                     value={config.date}
                     onChange={(e) => setConfig((prev) => ({ ...prev, date: e.target.value }))}
-                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                     className="h-8 text-xs"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="time" className="text-sm font-medium" style={{ color: colors.text }}>
+                  <Label htmlFor="time" className="text-sm font-medium" style={{ color: ui.text }}>
                     Time
                   </Label>
                   <Input
@@ -688,7 +697,7 @@ export function StarMapGenerator() {
                     type="time"
                     value={config.time}
                     onChange={(e) => setConfig((prev) => ({ ...prev, time: e.target.value }))}
-                    style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                    style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                     className="h-8 text-xs"
                   />
                 </div>
@@ -696,16 +705,16 @@ export function StarMapGenerator() {
             </Card>
 
             {/* Location */}
-            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            <Card style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
-                  <MapPin className="w-4 h-4" style={{ color: colors.subtext }} />
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
+                  <MapPin className="w-4 h-4" style={{ color: ui.muted }} />
                   Location
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 <div className="space-y-1">
-                  <Label className="text-sm font-medium" style={{ color: colors.text }}>
+                  <Label className="text-sm font-medium" style={{ color: ui.text }}>
                     City
                   </Label>
                   <div className="relative">
@@ -713,13 +722,13 @@ export function StarMapGenerator() {
                       placeholder="Search city..."
                       value={cityQuery}
                       onChange={(e) => setCityQuery(e.target.value)}
-                      style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                      style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                       className="h-8 text-xs"
                     />
                     {cityQuery && (
                       <div
                         className="absolute z-20 mt-1 w-full max-h-60 overflow-auto rounded-md border bg-popover text-popover-foreground shadow-md"
-                        style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                        style={{ borderColor: ui.cardBorder, backgroundColor: ui.cardBg, color: ui.text }}
                       >
                         {isSearchingCities ? (
                           <div className="p-2 text-xs opacity-70">Searching...</div>
@@ -732,7 +741,7 @@ export function StarMapGenerator() {
                               type="button"
                               onClick={() => handleCitySelect(r)}
                               className="w-full text-left px-3 py-2 text-xs hover:opacity-80"
-                              style={{ color: colors.text }}
+                              style={{ color: ui.text }}
                             >
                               {r.concise_name}
                             </button>
@@ -741,13 +750,13 @@ export function StarMapGenerator() {
                       </div>
                     )}
                   </div>
-                  <div className="text-xs opacity-70" style={{ color: colors.subtext }}>
+                  <div className="text-xs opacity-70" style={{ color: ui.muted }}>
                     Selected: {config.city} ({config.latitude.toFixed(4)}, {config.longitude.toFixed(4)})
                   </div>
                 </div>
                 <div className="grid grid-cols-2 gap-2">
                   <div className="space-y-2">
-                    <Label htmlFor="latitude" className="text-xs font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="latitude" className="text-xs font-medium" style={{ color: ui.text }}>
                       Latitude
                     </Label>
                     <Input
@@ -756,12 +765,12 @@ export function StarMapGenerator() {
                       step="0.0001"
                       value={config.latitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, latitude: Number.parseFloat(e.target.value) }))}
-                      style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                      style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                       className="text-xs h-8"
                     />
                   </div>
                   <div className="space-y-2">
-                    <Label htmlFor="longitude" className="text-xs font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="longitude" className="text-xs font-medium" style={{ color: ui.text }}>
                       Longitude
                     </Label>
                     <Input
@@ -770,7 +779,7 @@ export function StarMapGenerator() {
                       step="0.0001"
                       value={config.longitude}
                       onChange={(e) => setConfig((prev) => ({ ...prev, longitude: Number.parseFloat(e.target.value) }))}
-                      style={{ borderColor: colors.cardBorder, backgroundColor: colors.cardBg, color: colors.text }}
+                      style={{ borderColor: ui.cardBorder, backgroundColor: ui.inputBg, color: ui.text }}
                       className="text-xs h-8"
                     />
                   </div>
@@ -780,10 +789,10 @@ export function StarMapGenerator() {
 
 
             {/* Theme & Options */}
-            <Card style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder }}>
+            <Card style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder }}>
               <CardHeader className="pb-4">
-                <CardTitle className="flex items-center gap-2 text-base" style={{ color: colors.text }}>
-                  <Palette className="w-4 h-4" style={{ color: colors.subtext }} />
+                <CardTitle className="flex items-center gap-2 text-base" style={{ color: ui.text }}>
+                  <Palette className="w-4 h-4" style={{ color: ui.muted }} />
                   Poster Options
                 </CardTitle>
               </CardHeader>
@@ -793,7 +802,7 @@ export function StarMapGenerator() {
                     <Label
                       htmlFor="darkMode"
                       className="text-sm font-medium flex items-center gap-2"
-                      style={{ color: colors.text }}
+                      style={{ color: ui.text }}
                     >
                       {config.darkMode ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
                       Dark Mode
@@ -805,7 +814,7 @@ export function StarMapGenerator() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="constellations" className="text-sm font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="constellations" className="text-sm font-medium" style={{ color: ui.text }}>
                       Constellations
                     </Label>
                     <Switch
@@ -815,7 +824,7 @@ export function StarMapGenerator() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="grid" className="text-sm font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="grid" className="text-sm font-medium" style={{ color: ui.text }}>
                       Coordinate Grid
                     </Label>
                     <Switch
@@ -825,7 +834,7 @@ export function StarMapGenerator() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="graticule" className="text-sm font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="graticule" className="text-sm font-medium" style={{ color: ui.text }}>
                       Graticule (RA/Dec)
                     </Label>
                     <Switch
@@ -835,7 +844,7 @@ export function StarMapGenerator() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="labels" className="text-sm font-medium" style={{ color: colors.text }}>
+                    <Label htmlFor="labels" className="text-sm font-medium" style={{ color: ui.text }}>
                       Star Names
                     </Label>
                     <Switch
@@ -854,7 +863,7 @@ export function StarMapGenerator() {
                 onClick={generateStarMap}
                 disabled={isGenerating}
                 className="w-full h-11 text-sm"
-                style={{ backgroundColor: colors.text, color: colors.background }}
+
                 size="lg"
               >
                 {isGenerating ? (
@@ -871,7 +880,7 @@ export function StarMapGenerator() {
                 size="sm"
                 onClick={resetToDefaults}
                 className="w-full bg-transparent"
-                style={{ backgroundColor: colors.cardBg, borderColor: colors.cardBorder, color: colors.text }}
+                style={{ backgroundColor: ui.cardBg, borderColor: ui.cardBorder, color: ui.text }}
               >
                 <RotateCcw className="w-4 h-4 mr-2" />
                 Reset to Defaults
@@ -920,7 +929,7 @@ export function StarMapGenerator() {
                   </div>
                 </div>
 
-                <div className="text-center mt-4 sm:mt-5 mb-5 sm:mb-7 px-3" data-export-scope>
+                <div className="text-center mt-6 sm:mt-8 mb-6 sm:mb-8 px-3" data-export-scope>
                   <h2
                     data-title
                     className="mb-4 text-3xl sm:text-4xl md:text-5xl mt-10 sm:mt-16 md:mt-24"
@@ -944,12 +953,12 @@ export function StarMapGenerator() {
 
                   {/* Names */}
                   <p data-subtitle className="text-[11px] sm:text-base font-semibold tracking-[0.1em] sm:tracking-[0.2em] break-words"
-                    style={{ color: colors.text, marginTop: 10, marginBottom: 4 }}>
+                    style={{ color: colors.text, marginTop: 14, marginBottom: 6 }}>
                     {config.customSubtitle}
                   </p>
 
                   {/* Date and Location */}
-                  <p data-date className="text-[9px] sm:text-[10px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: 2 }}>
+                  <p data-date className="text-[9px] sm:text-[10px] tracking-[0.1em] leading-tight" style={{ color: colors.subtext, marginTop: 6 }}>
                     {(() => {
                       // Render date without timezone shifting by constructing local midnight
                       try {

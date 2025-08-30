@@ -191,33 +191,29 @@ export function StarFieldSVG({ config, isGenerating }: StarFieldProps) {
             </g>
           )}
 
-          {/* Graticule: Right Ascension (RA) and Declination (Dec) */}
+          {/* Graticule: single solid curved meridians, centered at 3/5 from bottom */}
           {config.showGraticule && (
             <g>
-              {/* Soft glow underlay */}
-              <g stroke={config.darkMode ? "#c7d2fe" : "#6366f1"} strokeWidth={2.2} opacity={0.18}>
-                {[15, 30, 45, 60].map((deg) => (
-                  <circle key={`dec-glow-${deg}`} cx={center} cy={center} r={(radius * (90 - deg)) / 90} fill="none" />
-                ))}
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const a = (i * Math.PI) / 12 + raRotation
-                  const x = center + radius * Math.cos(a - Math.PI / 2)
-                  const y = center + radius * Math.sin(a - Math.PI / 2)
-                  return <line key={`ra-glow-${i}`} x1={center} y1={center} x2={x} y2={y} />
-                })}
-              </g>
-              {/* Main graticule */}
-              <g stroke={config.darkMode ? "#c7d2fe" : "#475569"} strokeWidth={1.1} opacity={0.85}>
-                {[15, 30, 45, 60].map((deg) => (
-                  <circle key={`dec-${deg}`} cx={center} cy={center} r={(radius * (90 - deg)) / 90} fill="none" strokeDasharray="4 3" />
-                ))}
-                {Array.from({ length: 24 }).map((_, i) => {
-                  const a = (i * Math.PI) / 12 + raRotation
-                  const x = center + radius * Math.cos(a - Math.PI / 2)
-                  const y = center + radius * Math.sin(a - Math.PI / 2)
-                  return <line key={`ra-${i}`} x1={center} y1={center} x2={x} y2={y} strokeDasharray="7 4" />
-                })}
-              </g>
+              {(() => {
+                const poleX = center
+                const poleY = center - radius * 0.99 // 3/5 from bottom
+                const raCount = 36
+                const ctrlY = (poleY + center) / 2 - radius * 0.1 // control point centered vertically
+
+                return (
+                  <g stroke={config.darkMode ? "#c7d2fe" : "#475569"} strokeWidth={1.1} opacity={0.85}>
+                    {Array.from({ length: raCount }).map((_, i) => {
+                      const a = (i * (Math.PI * 2)) / raCount + raRotation
+                      const x1 = center + radius * Math.cos(a + Math.PI)
+                      const y1 = center + radius * Math.sin(a + Math.PI)
+                      const x2 = center + radius * Math.cos(a)
+                      const y2 = center + radius * Math.sin(a)
+                      const d = `M ${x1} ${y1} Q ${poleX} ${ctrlY} ${x2} ${y2}`
+                      return <path key={`ra-${i}`} d={d} fill="none" strokeDasharray="7 4" />
+                    })}
+                  </g>
+                )
+              })()}
             </g>
           )}
 

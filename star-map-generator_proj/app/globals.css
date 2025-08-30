@@ -264,7 +264,14 @@
 }
 
 [data-export="pdf"] [data-title] {
-  margin-bottom: 18px !important;
+  margin-bottom: 28px !important;
+  /* more space between title and names */
+}
+
+/* Nudge entire text block lower during PDF export */
+[data-export="pdf"] [data-export-scope] {
+  margin-top: 44px !important;
+  /* lower the whole text block without changing size */
 }
 
 /* Hide non-print elements during export */
