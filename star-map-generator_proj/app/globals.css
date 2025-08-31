@@ -337,6 +337,21 @@
   color: transparent;
 }
 
+/* Global shine animation for promo banner */
+@keyframes shine {
+  0% {
+    transform: translateX(-120%) skewX(-15deg);
+  }
+
+  100% {
+    transform: translateX(220%) skewX(-15deg);
+  }
+}
+
+.animate-shine {
+  animation: shine 2.8s linear infinite;
+}
+
 .btn-gradient {
   background: linear-gradient(135deg, var(--color-foreground) 0%, #6366f1 50%, #a855f7 100%);
   color: var(--color-card);

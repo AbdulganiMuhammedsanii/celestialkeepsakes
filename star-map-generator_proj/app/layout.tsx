@@ -69,6 +69,22 @@ export default function RootLayout({
             </nav>
           </div>
         </header>
+        {/* Top promo banner */}
+        <div className="w-full border-b">
+          <div className="btn-gradient">
+            <div className="container mx-auto px-4 py-2 text-center relative overflow-hidden">
+              <span className="text-xs sm:text-sm font-medium tracking-wide text-white">
+                Perfect birthday and anniversary gift
+              </span>
+              <div className="pointer-events-none absolute inset-0">
+                <div
+                  className="absolute top-0 left-[-30%] h-full w-1/3 opacity-20 animate-shine"
+                  style={{ background: "linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.7) 50%, rgba(255,255,255,0) 100%)" }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
         <main className="section-gradient min-h-[100dvh] overflow-x-hidden">{children}</main>
         <footer className="border-t mt-16">
           <div className="container mx-auto px-4 py-10 text-sm text-muted-foreground">
