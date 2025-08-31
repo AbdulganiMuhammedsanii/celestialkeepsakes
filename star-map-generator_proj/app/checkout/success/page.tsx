@@ -9,7 +9,8 @@ export default function SuccessPage() {
     const sessionId = url.searchParams.get("session_id")
     const paidHash = url.searchParams.get("h")
     const isPrint = url.searchParams.get("print") === "1"
-    const target = new URL(`/#create`, window.location.origin)
+    const type = url.searchParams.get("type")
+    const target = new URL(type === "sound" ? "/sound" : "/#create", window.location.origin)
     if (!isPrint && paidHash) target.searchParams.set("paid", "true")
     if (!isPrint && paidHash) target.searchParams.set("h", paidHash)
     // Navigate back to home; auto-download only for digital purchase

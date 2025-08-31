@@ -65,6 +65,7 @@ export default function RootLayout({
               <a href="/" className="hover:opacity-80">Home</a>
               <a href="/shop" className="hover:opacity-80">Shop</a>
               <a href="/faq" className="hover:opacity-80">FAQ</a>
+              <a href="/sound" className="hover:opacity-80">Sound Poster</a>
               <a href="/contact" className="hover:opacity-80">Contact</a>
             </nav>
           </div>

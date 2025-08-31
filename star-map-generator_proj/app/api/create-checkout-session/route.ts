@@ -13,6 +13,7 @@ export async function POST(request: Request) {
   try {
     const body = await request.json().catch(() => ({}))
     const configHash = typeof body?.configHash === "string" ? body.configHash : undefined
+    const type = typeof body?.type === "string" ? body.type : undefined
 
     const site = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     const session = await stripeClient.checkout.sessions.create({
@@ -22,14 +23,14 @@ export async function POST(request: Request) {
         {
           price_data: {
             currency: "usd",
-            product_data: { name: "Custom Star Map PDF" },
+            product_data: { name: type === "sound" ? "Custom Sound Wave Poster PDF" : "Custom Star Map PDF" },
             unit_amount: 699,
           },
           quantity: 1,
         },
       ],
       metadata: configHash ? { configHash } : undefined,
-      success_url: `${site}/checkout/success?session_id={CHECKOUT_SESSION_ID}${configHash ? `&h=${configHash}` : ""}`,
+      success_url: `${site}/checkout/success?session_id={CHECKOUT_SESSION_ID}${configHash ? `&h=${configHash}` : ""}${type ? `&type=${encodeURIComponent(type)}` : ""}`,
       cancel_url: `${site}/checkout/cancel`,
     })
 
