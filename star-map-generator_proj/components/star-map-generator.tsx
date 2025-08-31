@@ -10,7 +10,7 @@ import { Switch } from "@/components/ui/switch"
 import { StarFieldSVG } from "@/components/star-field-svg"
 import html2canvas from "html2canvas"
 import { AuthButton } from "@/components/auth-button"
-import { MapPin, Calendar, Palette, Download, RotateCcw, Moon, Sun, Save, ShoppingCart } from "lucide-react"
+import { MapPin, Calendar, Palette, Download, RotateCcw, Moon, Sun, Save, ShoppingCart, ShieldCheck, Clock, Tag, Star } from "lucide-react"
 
 interface StarMapConfig {
   date: string
@@ -638,7 +638,7 @@ export function StarMapGenerator() {
                 <>
                   <Button onClick={beginCheckout} className="w-full sm:w-auto px-5 py-2 shadow-lg">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    {couponStatus === "valid" ? "Download (Coupon)" : "Instant Checkout ($6.99)"}
+                    {couponStatus === "valid" ? "Download (Coupon)" : "Instant Checkout"}
                   </Button>
                   {/* Physical print order button */}
                   <Button
@@ -656,7 +656,7 @@ export function StarMapGenerator() {
                     }}
                     className="w-full sm:w-auto px-5 py-2 btn-gradient shadow-lg"
                   >
-                    Order Print ({(config.printSize === "8x8" || config.printSize === "8x10") ? "$19.99" : "$29.99"})
+                    Order Print
                   </Button>
                   {/* Add to Cart for print */}
                   <Button
@@ -698,6 +698,21 @@ export function StarMapGenerator() {
                       Add Print to Cart
                     </>
                   </Button>
+                  {/* Trust badges / persuasion */}
+                  <div className="w-full grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] sm:text-xs mt-1 text-muted-foreground">
+                    <div className="flex items-center gap-1 justify-center border rounded px-2 py-1">
+                      <Tag className="w-3 h-3" /> Limited-time: Save today
+                    </div>
+                    <div className="flex items-center gap-1 justify-center border rounded px-2 py-1">
+                      <ShieldCheck className="w-3 h-3" /> Secure checkout
+                    </div>
+                    <div className="flex items-center gap-1 justify-center border rounded px-2 py-1">
+                      <Clock className="w-3 h-3" /> Instant download
+                    </div>
+                    <div className="flex items-center gap-1 justify-center border rounded px-2 py-1">
+                      <Star className="w-3 h-3" /> Trusted by creators
+                    </div>
+                  </div>
                 </>
               )}
             </div>

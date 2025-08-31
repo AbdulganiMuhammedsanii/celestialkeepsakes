@@ -34,7 +34,18 @@ export default function Home() {
 
       {/* Reviews */}
       <section className="container mx-auto px-4 py-12">
-        <h2 className="text-2xl font-semibold mb-5">Stories From the Heart</h2>
+        <div className="flex items-center justify-between mb-5">
+          <h2 className="text-2xl font-semibold">Stories From the Heart</h2>
+          <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs md:text-sm card-glass">
+            <div className="flex items-center gap-1 text-yellow-500">
+              {Array.from({ length: 5 }).map((_, i) => (
+                <Star key={i} className="w-4 h-4 fill-yellow-400" />
+              ))}
+            </div>
+            <span className="font-medium">4.8 average</span>
+            <span className="text-muted-foreground">• 213 reviews</span>
+          </div>
+        </div>
         <div className="grid md:grid-cols-3 gap-6">
           <div className="rounded-xl border p-6 card-glass">
             <div className="flex items-center gap-3 mb-3">
