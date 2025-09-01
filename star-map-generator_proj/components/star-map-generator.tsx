@@ -638,7 +638,7 @@ export function StarMapGenerator() {
                 <>
                   <Button onClick={beginCheckout} className="w-full sm:w-auto px-5 py-2 shadow-lg">
                     <ShoppingCart className="w-4 h-4 mr-2" />
-                    {couponStatus === "valid" ? "Download (Coupon)" : "Instant Checkout"}
+                    {couponStatus === "valid" ? "Download (Coupon)" : "Instant Checkout ($0.99)"}
                   </Button>
                   {/* Physical print order button */}
                   <Button

@@ -24,7 +24,7 @@ export async function POST(request: Request) {
           price_data: {
             currency: "usd",
             product_data: { name: type === "sound" ? "Custom Sound Wave Poster PDF" : "Custom Star Map PDF" },
-            unit_amount: 699,
+            unit_amount: 99,
           },
           quantity: 1,
         },

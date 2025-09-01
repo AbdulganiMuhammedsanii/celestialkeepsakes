@@ -60,7 +60,7 @@ export default function RootLayout({
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable} ${dancingScript.variable} ${playfairDisplay.variable} ${cormorant.variable} ${greatVibes.variable} ${parisienne.variable}`}>
         <header className="sticky top-0 z-40 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
           <div className="container mx-auto px-4 sm:py-4 py-3 pt-[max(env(safe-area-inset-top),0.75rem)] flex items-center justify-between">
-            <a href="/" className="text-lg font-semibold brand-gradient">Celestial Keepsakes</a>
+            <a href="/" className="text-sm sm:text-base md:text-lg font-semibold brand-gradient">Celestial Keepsakes</a>
             <nav className="flex gap-6 text-sm">
               <a href="/" className="hover:opacity-80">Home</a>
               <a href="/shop" className="hover:opacity-80">Shop</a>
@@ -75,7 +75,7 @@ export default function RootLayout({
           <div className="btn-gradient">
             <div className="container mx-auto px-4 py-2 text-center relative overflow-hidden">
               <span className="text-xs sm:text-sm font-medium tracking-wide text-white">
-                Perfect birthday and anniversary gift
+                Limited-time: Star Map PDF just $0.99 — boost your downloads today!
               </span>
               <div className="pointer-events-none absolute inset-0">
                 <div
