@@ -75,7 +75,7 @@ export default function RootLayout({
           <div className="btn-gradient">
             <div className="container mx-auto px-4 py-2 text-center relative overflow-hidden">
               <span className="text-xs sm:text-sm font-medium tracking-wide text-white">
-                Limited-time: Star Map PDF just $0.99 — boost your downloads today!
+                Star Map PDF $7.00 — secure, instant download
               </span>
               <div className="pointer-events-none absolute inset-0">
                 <div

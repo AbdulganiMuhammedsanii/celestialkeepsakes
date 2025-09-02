@@ -71,7 +71,7 @@ export default function CheckoutPage() {
         <div className="flex items-start justify-between gap-6 flex-col md:flex-row">
           <div className="flex-1">
             <h1 className="text-3xl font-bold mb-2">Checkout</h1>
-            <p className="text-muted-foreground mb-4">Limited time: Pay $0.99 for the high‑resolution PDF, or order a physical print.</p>
+            <p className="text-muted-foreground mb-4">Pay $7.00 to receive your high‑resolution PDF instantly, or order a physical print.</p>
             <ul className="text-sm text-muted-foreground space-y-2 mb-6">
               <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> Secure payment powered by Stripe</li>
               <li className="flex items-center gap-2"><Clock className="w-4 h-4" /> Instant access after payment (PDF)</li>
@@ -88,7 +88,7 @@ export default function CheckoutPage() {
           </div>
           <div className="w-full md:w-64 rounded-xl border p-4 bg-background/40">
             <h3 className="text-sm font-semibold mb-3">Order Summary</h3>
-            <div className="flex items-center justify-between text-sm mb-1"><span>Custom Star Map PDF</span><span>$0.99</span></div>
+            <div className="flex items-center justify-between text-sm mb-1"><span>Custom Star Map PDF</span><span>$7.00</span></div>
             {config && (
               <>
                 <div className="flex items-center justify-between text-xs mb-1"><span>Size</span><span>{config.printSize || "8x8"}</span></div>
@@ -106,7 +106,7 @@ export default function CheckoutPage() {
             </div>
             <div className="flex items-center justify-between text-sm font-semibold border-t pt-2">
               <span>Total</span>
-              <span>$0.99</span>
+              <span>$7.00</span>
             </div>
           </div>
         </div>

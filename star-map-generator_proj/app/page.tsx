@@ -1,6 +1,4 @@
 import { StarMapGenerator } from "@/components/star-map-generator"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Star } from "lucide-react"
 import Image from "next/image"
 import samplePic from "@/components/sample_pic.png"
 
@@ -32,77 +30,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Reviews */}
-      <section className="container mx-auto px-4 py-12">
-        <div className="flex items-center justify-between mb-5">
-          <h2 className="text-2xl font-semibold">Stories From the Heart</h2>
-          <div className="inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs md:text-sm card-glass">
-            <div className="flex items-center gap-1 text-yellow-500">
-              {Array.from({ length: 5 }).map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-yellow-400" />
-              ))}
-            </div>
-            <span className="font-medium">4.8 average</span>
-            <span className="text-muted-foreground">• 213 reviews</span>
-          </div>
-        </div>
-        <div className="grid md:grid-cols-3 gap-6">
-          <div className="rounded-xl border p-6 card-glass">
-            <div className="flex items-center gap-3 mb-3">
-              <Avatar>
-                <AvatarFallback>D</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">Davis A.</p>
-                <div className="flex text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400" />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              “Absolutely stunning. The map captured the night of our engagement perfectly and the design feels elegant and thoughtful. It’s now the centerpiece of our living room.”
-            </p>
-          </div>
-          <div className="rounded-xl border p-6 card-glass">
-            <div className="flex items-center gap-3 mb-3">
-              <Avatar>
-                <AvatarFallback>B</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">Bryan Sanchez</p>
-                <div className="flex text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400" />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              “Fast, elegant, and heartfelt. I designed one for my parents’ anniversary and they teared up. The process was simple and the result felt premium.”
-            </p>
-          </div>
-          <div className="rounded-xl border p-6 card-glass">
-            <div className="flex items-center gap-3 mb-3">
-              <Avatar>
-                <AvatarFallback>S</AvatarFallback>
-              </Avatar>
-              <div>
-                <p className="text-sm font-medium">Srithi P.</p>
-                <div className="flex text-yellow-400">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="w-4 h-4 fill-yellow-400" />
-                  ))}
-                </div>
-              </div>
-            </div>
-            <p className="text-sm leading-relaxed text-muted-foreground">
-              “The details are beautiful and the customization is effortless. It looks like a boutique studio piece — can’t recommend it enough.”
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* Reviews removed */}
 
 
 
